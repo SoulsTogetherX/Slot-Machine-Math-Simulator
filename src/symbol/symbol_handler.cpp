@@ -21,7 +21,8 @@ void SymbolHandler::extractSymbols(const json& info) {
         }
         
         SYMBOL_TYPE type;
-        string str_type = extractStr("type", it);
+        string str_type = extractStr("type", it, "normal");
+
         if (str_type == "normal") {
             type = NORMAL;
         } else if (str_type == "wild") {
@@ -30,8 +31,7 @@ void SymbolHandler::extractSymbols(const json& info) {
             throw std::invalid_argument("Unknown 'type' found.");
         }
         
-        int value = extractInt("value", it, 1);
-        symbols[id] = Symbol(id, type, value);
+        symbols[id] = Symbol(id, type);
     }
 }
 #pragma endregion

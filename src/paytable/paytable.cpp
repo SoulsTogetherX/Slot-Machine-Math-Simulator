@@ -18,18 +18,18 @@ StatsHandler PayTable::getStats() const {
 
 #pragma region Run Methods
 PayoutResult PayTable::evaluate(const std::vector<Symbol>& result) {
-    PayoutResult payout;
+    PayoutResult payout_result;
     if (isVaildMatch(result)) {
         stats.addSymbols(result);
         stats.increaseCount(1);
 
-        payout.won = true;
-        payout.payout = 1;
+        payout_result.won = true;
+        payout_result.payout = payoutWin;
     } else {
-        payout.won = false;
-        payout.payout = 0;
+        payout_result.won = false;
+        payout_result.payout = payoutFail;
     }
-    return payout;
+    return payout_result;
 }
 #pragma endregion
 

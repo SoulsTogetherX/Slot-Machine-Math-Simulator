@@ -22,9 +22,6 @@
           "type": {
             "type": "string",
             "enum": ["normal", "wild"]
-          },
-          "value": {
-            "type": "number"
           }
         },
         "required": ["id", "type"]
@@ -87,24 +84,26 @@
     "paytables": {
       "type": "array",
       "items": {
-        "anyOf": [
-          {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "pattern_id": {
-                "type": "string"
-              },
-              "symbol_requirement": {
-                "type": "string",
-                "enum": ["matching"]
-              }
-            },
-            "required": ["id", "pattern_id", "symbol_requirement"]
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "pattern_id": {
+            "type": "string"
+          },
+          "symbol_requirement": {
+            "type": "string",
+            "enum": ["matching"]
+          },
+          "payoutWin": {
+            "type": "number"
+          },
+          "payoutFail": {
+            "type": "number"
           }
-        ]
+        },
+        "required": ["id", "pattern_id", "symbol_requirement", "payoutWin"]
       }
     }
   },

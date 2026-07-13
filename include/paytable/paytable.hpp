@@ -18,11 +18,16 @@ private:
     string id; // The PayTable's name
     string pattern_id; // The attached Pattern's name
 
+    int payoutWin; // The payout gained from succeeding
+    int payoutFail; // The payout gained from failing
+
     // Returns if the given convolution is considered a vaild win.
     virtual bool isVaildMatch(const std::vector<Symbol>& result) const = 0;
 public:
     PayTable() {};
-    PayTable(string id, string pattern_id) : id(id), pattern_id(pattern_id) {};
+    PayTable(
+        string id, string pattern_id, int payoutWin, int payoutFail
+    ) : id(id), pattern_id(pattern_id), payoutWin(payoutWin), payoutFail(payoutFail) {};
 
     // Accessor Methods
     string getId() const;
@@ -39,7 +44,9 @@ private:
     bool isVaildMatch(const std::vector<Symbol>& result) const override;
 public:
     PayTableMatching() {};
-    PayTableMatching(string id, string pattern_id) : PayTable(id, pattern_id) {};
+    PayTableMatching(
+        string id, string pattern_id, int payoutWin, int payoutFail
+    ) : PayTable(id, pattern_id, payoutWin, payoutFail) {};
 };
 
 #endif  // PAY_TABLE_HPP

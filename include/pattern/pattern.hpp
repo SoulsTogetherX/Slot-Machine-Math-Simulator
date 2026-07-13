@@ -14,7 +14,7 @@
 class Pattern {
 private:
     StatsHandler stats;
-    
+
     string id; // The Pattern's name
 
     // Returns one or more convolutions over the slot screen.
@@ -44,8 +44,8 @@ private:
         const std::vector<std::vector<Symbol>> &results 
     ) const override;
 public:
-    LinePattern();
-    LinePattern(string id, uint row);
+    LinePattern() {};
+    LinePattern(string id, uint row) : Pattern(id), row(row) {};
 };
 
 #endif  // PATTERN_HPP

@@ -63,7 +63,8 @@
     {
       "id": "paytable_1",
       "pattern_id": "row",
-      "symbol_requirement": "matching"
+      "symbol_requirement": "matching",
+      "payoutWin": 1
     }
   ]
 }
