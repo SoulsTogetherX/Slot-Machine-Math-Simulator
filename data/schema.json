@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "payout_rows": {
+      "type": "integer"
+    },
+    "seed": {
+      "anyOf": [{ "type": "string" }, { "type": "integer" }]
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["normal", "wild"]
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": ["id", "type"]
+      }
+    },
+    "reels": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "repeat": {
+                  "type": "integer"
+                }
+              },
+              "required": ["id", "repeat"]
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "match_type": {
+                "type": "string",
+                "const": "line"
+              },
+              "row": {
+                "type": "integer"
+              },
+              "filter": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["id", "match_type", "row"]
+          }
+        ]
+      }
+    },
+    "paytables": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "pattern_id": {
+                "type": "string"
+              },
+              "symbol_requirement": {
+                "type": "string",
+                "enum": ["matching"]
+              }
+            },
+            "required": ["id", "pattern_id", "symbol_requirement"]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "name",
+    "payout_rows",
+    "seed",
+    "symbols",
+    "reels",
+    "patterns",
+    "paytables"
+  ]
+}

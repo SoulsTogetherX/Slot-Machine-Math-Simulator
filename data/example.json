@@ -1,0 +1,69 @@
+{
+  "$schema": "./schema.json",
+  "name": "example_game",
+  "payout_rows": 1,
+  "seed": "auto",
+  "symbols": [
+    {
+      "id": "CHERRY",
+      "type": "normal"
+    },
+    {
+      "id": "BAR",
+      "type": "normal"
+    },
+    {
+      "id": "SEVEN",
+      "type": "normal"
+    }
+  ],
+  "reels": [
+    [
+      {
+        "id": "CHERRY",
+        "repeat": 2
+      },
+      "SEVEN",
+      {
+        "id": "BAR",
+        "repeat": 1
+      }
+    ],
+    [
+      {
+        "id": "CHERRY",
+        "repeat": 2
+      },
+      "SEVEN",
+      {
+        "id": "BAR",
+        "repeat": 1
+      }
+    ],
+    [
+      {
+        "id": "CHERRY",
+        "repeat": 2
+      },
+      "SEVEN",
+      {
+        "id": "BAR",
+        "repeat": 1
+      }
+    ]
+  ],
+  "patterns": [
+    {
+      "id": "row",
+      "match_type": "line",
+      "row": 1
+    }
+  ],
+  "paytables": [
+    {
+      "id": "paytable_1",
+      "pattern_id": "row",
+      "symbol_requirement": "matching"
+    }
+  ]
+}
