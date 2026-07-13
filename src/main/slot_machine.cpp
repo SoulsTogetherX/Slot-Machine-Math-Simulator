@@ -1,7 +1,7 @@
 #include <fstream>
 
 #include "utilts/defs.hpp"
-#include "main/game.hpp"
+#include "main/slot_machine.hpp"
 #include "utilts/extracts.hpp"
 #include "virtual_reels/reel.hpp"
 #include "pattern/pattern.hpp"
@@ -9,20 +9,19 @@
 
 
 #pragma region Constructors
-Game::Game() {
+SlotMachine::SlotMachine() {
     clear();
 }
-Game::Game(string pathname) {
+SlotMachine::SlotMachine(string pathname) {
     loadPath(pathname);
 }
-Game::Game(const json& data) {
+SlotMachine::SlotMachine(const json& data) {
     loadJson(data);
 }
 #pragma endregion endregion
 
-
 #pragma region Load Info
-void Game::loadPath(string pathname) {
+void SlotMachine::loadPath(string pathname) {
     clear();
 
     std::ifstream file(pathname);
@@ -34,12 +33,11 @@ void Game::loadPath(string pathname) {
     file >> data;
     loadJson(data);
 }
-#include <iostream>
-void Game::loadJson(const json& data) {
+void SlotMachine::loadJson(const json& data) {
     clear();
     
     // Id
-    name = extractStr("name", data);
+    name = extractStr("name", data, "default-slotmachine-name");
 
     // Symbols
     symbol_handler.loadJson(data);
@@ -52,19 +50,26 @@ void Game::loadJson(const json& data) {
 
     // Paytable
     paytable_handler.loadJson(data, pattern_handler);
-
-    spinBet();
 }
 #pragma endregion
 
+#pragma region Accessor Methods
+string SlotMachine::getName() const {
+    return name;
+}
+#pragma endregion
 
-#pragma region Helpers
-void Game::spinBet() {
+#pragma region Runner
+// Spins the slot machine once
+void SlotMachine::spinBet() {
     auto results = reel_handler.runSpin();
     paytable_handler.evaluateAll(results, pattern_handler);
 }
+#pragma endregion
 
-void Game::clear() {
+#pragma region Helpers
+// Clears all data
+void SlotMachine::clear() {
     name = "";
 
     symbol_handler.clear();

@@ -36,13 +36,14 @@ void SymbolHandler::extractSymbols(const json& info) {
 }
 #pragma endregion
 
-#pragma region Helpers
+#pragma region Accessor Methods
 bool SymbolHandler::hasSymbol(string id) const {
     return symbols.find(id) != symbols.end();
 }
 const Symbol& SymbolHandler::getSymbol(string id) const {
     return symbols.at(id);
 }
+
 std::vector<string> SymbolHandler::getSymbolIds() const {
     std::vector<string> ret;
     ret.reserve(symbols.size());
@@ -53,7 +54,9 @@ std::vector<string> SymbolHandler::getSymbolIds() const {
 
     return ret;
 }
+#pragma endregion
 
+#pragma region Helpers
 void SymbolHandler::clear() {
     symbols.clear();
 }

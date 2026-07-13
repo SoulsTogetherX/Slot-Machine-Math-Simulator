@@ -10,7 +10,6 @@ void PayTableHandler::loadJson(
 ) {
     extractPayTables(info.at("paytables"), pattern_handler);
 }
-
 void PayTableHandler::extractPayTables(
     const json& info, const PatternHandler& pattern_handler
 ) {
@@ -41,15 +40,26 @@ void PayTableHandler::extractPayTables(
 }
 #pragma endregion
 
-
-#pragma region Helpers
+#pragma region Access Methods
 bool PayTableHandler::hasPayTable(string id) const {
     return paytables.find(id) != paytables.end();
 }
 PayTable& PayTableHandler::getPayTable(string id) const {
     return *paytables.at(id);
 }
+#pragma endregion
 
+#pragma region Stats
+StatsHandler PayTableHandler::aggergateStats() const {
+    StatsHandler ret;
+    for (const auto& [key, value] : paytables) {
+        ret.merge((*value).getStats());
+    }
+    return ret;
+}
+#pragma endregion
+
+#pragma region Run Methods
 std::vector<PayoutResult> PayTableHandler::evaluateAll(
     const std::vector<std::vector<Symbol>> &results,
     const PatternHandler& pattern_handler
@@ -69,15 +79,9 @@ std::vector<PayoutResult> PayTableHandler::evaluateAll(
 
     return ret;
 }
+#pragma endregion
 
-StatsHandler PayTableHandler::aggergateStats() const {
-    StatsHandler ret;
-    for (const auto& [key, value] : paytables) {
-        ret.merge((*value).getStats());
-    }
-    return ret;
-}
-
+#pragma region Helpers
 void PayTableHandler::clear() {
     paytables.clear();
 }

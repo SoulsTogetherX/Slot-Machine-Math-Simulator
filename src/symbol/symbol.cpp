@@ -3,14 +3,16 @@
 
 
 
-#pragma region Helpers
+#pragma region Compairison
 bool Symbol::matches(Symbol symbol) const {
     if (symbol.getType() == WILD || type == WILD) {
         return true;
     }
     return symbol.getId() == id;
 }
+#pragma endregion
 
+#pragma region Accessors
 string Symbol::getId() const {
     return id;
 }

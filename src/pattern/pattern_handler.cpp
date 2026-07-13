@@ -8,7 +8,6 @@
 void PatternHandler::loadJson(const json& info, const ReelHandler& reel_handler) {
     extractPatterns(info.at("patterns"), reel_handler);
 }
-
 void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_handler) {
     if (!info.is_array()) {
         throw std::invalid_argument("Patterns is expected to be array, but found: " + to_string(info));
@@ -37,15 +36,16 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
 }
 #pragma endregion
 
-
-#pragma region Helpers
+#pragma region Accessor Methods
 bool PatternHandler::hasPattern(string id) const {
     return patterns.find(id) != patterns.end();
 }
 Pattern& PatternHandler::getPattern(string id) const {
     return *patterns.at(id);
 }
+#pragma endregion
 
+#pragma region Stats
 StatsHandler PatternHandler::aggergateStats() const {
     StatsHandler ret;
     for (const auto& [key, value] : patterns) {
@@ -53,7 +53,9 @@ StatsHandler PatternHandler::aggergateStats() const {
     }
     return ret;
 }
+#pragma endregion
 
+#pragma region Helpers
 void PatternHandler::clear() {
     patterns.clear();
 }

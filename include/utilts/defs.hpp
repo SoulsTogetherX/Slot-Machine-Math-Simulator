@@ -6,13 +6,15 @@
 
 #include "utilts/json.hpp"
 
+// Simplified types
 using string = std::string;
 using json = nlohmann::json;
 using uint = unsigned int;
 
+// The functionality type of a symbol
 enum SYMBOL_TYPE {
-    NORMAL,
-    WILD
+    NORMAL, // Normal
+    WILD    // Can be any Symbol
 };
 
 #endif  // DEFS_HPP

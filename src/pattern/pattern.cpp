@@ -1,15 +1,16 @@
 #include "pattern/pattern.hpp"
 
 
-#pragma region Pattern
+#pragma region Accessors
 string Pattern::getId() const {
     return id;
 }
-
-
 StatsHandler Pattern::getStats() const {
     return stats;
 }
+#pragma endregion
+
+#pragma region Pattern Convolution
 std::vector<std::vector<Symbol>> Pattern::convolution(
     const std::vector<std::vector<Symbol>> &results 
 ) {
@@ -21,10 +22,6 @@ std::vector<std::vector<Symbol>> Pattern::convolution(
 #pragma endregion
 
 #pragma region Line Pattern
-LinePattern::LinePattern() : Pattern(), row(0) {};
-LinePattern::LinePattern(string id, uint row) : Pattern(id), row(row) {};
-
-
 std::vector<std::vector<Symbol>> LinePattern::handleConvolution(
     const std::vector<std::vector<Symbol>> &results 
 ) const {

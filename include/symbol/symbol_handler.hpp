@@ -9,19 +9,24 @@
 
 
 
+// The Class that registers and holds all used symbols for the slotmachine.
 class SymbolHandler {
 private:
+    // A map of all registered Symbols (id, Symbol)
     std::unordered_map<string, Symbol> symbols;
 
+    // Extracts Symbols from json.
     void extractSymbols(const json& info);
 public:
+    // Extracts Symbols from json.
     void loadJson(const json& info);
 
+    // Accessor Methods
     bool hasSymbol(string id) const;
     const Symbol& getSymbol(string id) const;
-
     std::vector<string> getSymbolIds() const;
 
+    // Clears Symbols
     void clear();
 };
 

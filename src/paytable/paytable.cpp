@@ -2,20 +2,21 @@
 #include "utilts/defs.hpp"
 
 
-#pragma region Helper
+
+#pragma region Access Methods
 string PayTable::getId() const {
     return id;
 }
 string PayTable::getPatternId() const {
     return pattern_id;
 }
-#pragma endregion
 
-
-#pragma region PayTable
 StatsHandler PayTable::getStats() const {
     return stats;
 }
+#pragma endregion
+
+#pragma region Run Methods
 PayoutResult PayTable::evaluate(const std::vector<Symbol>& result) {
     PayoutResult payout;
     if (isVaildMatch(result)) {

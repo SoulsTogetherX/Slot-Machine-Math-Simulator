@@ -3,6 +3,7 @@
 
 #include "utilts/defs.hpp"
 
+// the main type holding the information of a payout result
 struct PayoutResult {
     int payout;
     bool won;

@@ -9,19 +9,23 @@
 
 
 
+// A class representing the Virtual Reel of a slotmachine.
 class VirtualReel {
 private:
-    std::vector<const Symbol*> reel;
+    std::vector<const Symbol*> reel; // Symbols on the Reel, in order.
     std::uniform_int_distribution<int> dist;
 
-    uint currentPos = 0;
+    uint currentPos = 0; // Current Position on the Reel
 public:
+    // Spins the Reel once
     void spin(std::mt19937 &rng);
-    Symbol getSymbolAt(uint idx) const;
 
+    // Adds a symbol to the Reel
     void addSymbol(const Symbol &s, uint repeat);
 
+    // Accessor Methods
     uint getReelLength() const;
+    Symbol getSymbolAt(uint idx) const;
 };
 
 #endif  // VIRTUAL_REEL_HPP

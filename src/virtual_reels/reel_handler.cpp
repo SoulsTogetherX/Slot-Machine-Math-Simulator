@@ -2,8 +2,6 @@
 #include "utilts/defs.hpp"
 #include "utilts/extracts.hpp"
 
-#include <random>
-
 
 
 #pragma region Extract Info Helpers
@@ -44,11 +42,6 @@ void ReelHandler::extractSeed(const json& info) {
     }
 
     throw std::invalid_argument("Seed must be either an integer or 'auto', but found: " + to_string(seed_info));
-}
-
-void ReelHandler::seedFromHardware() {
-    std::random_device rd;
-    rng.seed(rd());
 }
 
 void ReelHandler::extractReels(const json& info, const SymbolHandler& symbol_handler) {
@@ -93,8 +86,7 @@ void ReelHandler::extractReels(const json& info, const SymbolHandler& symbol_han
 }
 #pragma endregion
 
-
-#pragma region Helpers
+#pragma region Run Methods
 std::vector<std::vector<Symbol>> ReelHandler::runSpin() {
     for(uint i = 0; i < reels.size(); i++) {
         reels[i].spin(rng);
@@ -105,6 +97,9 @@ std::vector<std::vector<Symbol>> ReelHandler::runSpin() {
     stats.increaseCount(1);
     return results;
 }
+#pragma endregion
+
+#pragma region Accessor Methods
 std::vector<std::vector<Symbol>> ReelHandler::getSpinResult() {
     auto ret = std::vector<std::vector<Symbol>>(reels.size(), std::vector<Symbol>());
 
@@ -142,7 +137,11 @@ uint ReelHandler::getMaxReelLength() const {
 StatsHandler ReelHandler::getStats() const {
     return stats;
 }
+#pragma endregion
 
+#pragma region Helper
+void ReelHandler::seedFromHardware() {
+}
 void ReelHandler::clear() {
     payoutRows = 0;
     stats.clear();
