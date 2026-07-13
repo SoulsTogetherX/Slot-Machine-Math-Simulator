@@ -4,7 +4,7 @@
 
 
 #pragma region Compairison
-bool Symbol::matches(Symbol symbol) const {
+bool Symbol::matches(const Symbol& symbol) const {
     if (symbol.getType() == WILD || type == WILD) {
         return true;
     }

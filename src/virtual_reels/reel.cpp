@@ -4,11 +4,11 @@
 
 
 #pragma region Acess Methods
-Symbol VirtualReel::getSymbolAt(uint idx) const {
+const Symbol* VirtualReel::getSymbolAt(uint idx) const {
     if (reel.empty()) {
         throw std::out_of_range("Index out of bounds: " + std::to_string(idx));
     }
-    return *reel.at((currentPos + idx) % reel.size());
+    return reel.at((currentPos + idx) % reel.size());
 }
 
 void VirtualReel::addSymbol(const Symbol &s, uint repeat) {

@@ -31,15 +31,19 @@ public:
     );
 
     // Accessor Methods
-    bool hasPayTable(string id) const;
-    PayTable& getPayTable(string id) const;
+    bool hasPayTable(const string& id) const;
+    PayTable& getPayTable(const string& id) const;
+    // Returns non-owning views of every stored PayTable.
+    std::vector<const PayTable*> getAllPayTables() const;
 
     // Aggergate the accumulated stats from all patterns
     StatsHandler aggergateStats() const;
+    // Gets stats directly from a Paytable with given id
+    StatsHandler getDirectStats(const string& id) const;
 
     // Returns a vector of all PayoutResult from all stored PayTables
     std::vector<PayoutResult> evaluateAll(
-        const std::vector<std::vector<Symbol>> &results, const PatternHandler& pattern_handler
+        const SymbolGrid &results, const PatternHandler& pattern_handler
     );
 
     void clear();

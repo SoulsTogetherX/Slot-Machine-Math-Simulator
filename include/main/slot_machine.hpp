@@ -32,9 +32,17 @@ public:
 
     // Accessor Methods
     string getName() const;
+    
+    const SymbolHandler& getSymbolHandler() const;
+    const ReelHandler& getReelHandler() const;
+    const PatternHandler& getPatternHandler() const;
+    const PayTableHandler& getPayTableHandler() const;
 
     // Spins the slotmachine once, tracking all stats along the way.
     void spinBet();
+
+    // Prints the raw statistics
+    void printRaw() const;
 
     // Clears all Compoenent Classes
     void clear();

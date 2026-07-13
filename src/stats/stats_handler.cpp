@@ -4,8 +4,8 @@
 
 #pragma region Init Methods
 void StatsHandler::registerSymbols(const SymbolHandler &symbol_handler) {
-    for (auto id : symbol_handler.getSymbolIds()) {
-        symbolCount[id] = 0;
+    for (const auto& id : symbol_handler.getSymbolIds()) {
+        symbol_count[id] = 0;
     }
 }
 #pragma endregion
@@ -15,18 +15,18 @@ void StatsHandler::increaseCount(uint inc) {
     count += inc;
 }
 
-void StatsHandler::addSymbol(const Symbol& sym) {
-    symbolCount[sym.getId()] += 1;
+void StatsHandler::addSymbol(const Symbol* sym) {
+    symbol_count[sym->getId()] += 1;
 }
-void StatsHandler::addSymbols(const std::vector<Symbol>& syms) {
-    for (auto sym : syms) {
-        symbolCount[sym.getId()] += 1;
+void StatsHandler::addSymbols(const SymbolLine& syms) {
+    for (const Symbol* sym : syms) {
+        symbol_count[sym->getId()] += 1;
     }
 }
-void StatsHandler::addSymbolMass(const std::vector<std::vector<Symbol>>& syms) {
-    for (auto row : syms) {
-        for (auto sym : row) {
-            symbolCount[sym.getId()] += 1;
+void StatsHandler::addSymbolMass(const SymbolGrid& syms) {
+    for (const SymbolLine& row : syms) {
+        for (const Symbol* sym : row) {
+            symbol_count[sym->getId()] += 1;
         }
     }
 }
@@ -37,22 +37,29 @@ uint StatsHandler::getCount() const {
     return count;
 }
 std::unordered_map<string, uint> StatsHandler::getSymbolCounts() const {
-    return symbolCount;
+    return symbol_count;
+}
+
+string StatsHandler::serializeSymbols() const {
+    string ret = "";
+    for (const auto& [key, value] : symbol_count) {
+        ret += key + ": " + std::to_string(value) + "\n";
+    }
+    return ret;
 }
 #pragma endregion
 
 #pragma region Helper
 void StatsHandler::merge(const StatsHandler &stats_handler) {
-    auto other_symbol_count = stats_handler.getSymbolCounts();
-    count = stats_handler.count;
-    
-    for (auto pairs : symbolCount) {
-        pairs.second += other_symbol_count[pairs.first];
+    count += stats_handler.count;
+
+    for (const auto& [key, value] : stats_handler.symbol_count) {
+        symbol_count[key] += value;
     }
 }
 
 void StatsHandler::clear() {
     count = 0;
-    symbolCount.clear();
+    symbol_count.clear();
 }
 #pragma endregion

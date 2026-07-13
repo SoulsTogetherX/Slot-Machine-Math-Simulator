@@ -17,7 +17,7 @@ void PayTableHandler::extractPayTables(
         throw std::invalid_argument("Paytables is expected to be array, but found: " + to_string(info));
     }
 
-    for(auto it : info) {
+    for(const auto& it : info) {
         string id = extractStr("id", it);
         if (hasPayTable(id)) {
             throw std::invalid_argument("PayTable id '" + id + "' has already been defined.");
@@ -43,11 +43,20 @@ void PayTableHandler::extractPayTables(
 #pragma endregion
 
 #pragma region Access Methods
-bool PayTableHandler::hasPayTable(string id) const {
+bool PayTableHandler::hasPayTable(const string& id) const {
     return paytables.find(id) != paytables.end();
 }
-PayTable& PayTableHandler::getPayTable(string id) const {
+PayTable& PayTableHandler::getPayTable(const string& id) const {
     return *paytables.at(id);
+}
+std::vector<const PayTable*> PayTableHandler::getAllPayTables() const {
+    auto ret = std::vector<const PayTable*>();
+    ret.reserve(paytables.size());
+
+    for(const auto& [key, value] : paytables) {
+        ret.push_back(value.get());
+    }
+    return ret;
 }
 #pragma endregion
 
@@ -59,11 +68,14 @@ StatsHandler PayTableHandler::aggergateStats() const {
     }
     return ret;
 }
+StatsHandler PayTableHandler::getDirectStats(const string& id) const {
+    return paytables.at(id)->getStats();
+}
 #pragma endregion
 
 #pragma region Run Methods
 std::vector<PayoutResult> PayTableHandler::evaluateAll(
-    const std::vector<std::vector<Symbol>> &results,
+    const SymbolGrid &results,
     const PatternHandler& pattern_handler
 ) {
     auto ret = std::vector<PayoutResult>();
@@ -74,7 +86,7 @@ std::vector<PayoutResult> PayTableHandler::evaluateAll(
             paytable.second->getPatternId()
         ).convolution(results);
 
-        for(auto convolution : convolutions) {
+        for(const SymbolLine& convolution : convolutions) {
             ret.push_back(paytable.second->evaluate(convolution));
         }
     }

@@ -25,7 +25,8 @@ public:
 
     // Accessor Methods
     uint getReelLength() const;
-    Symbol getSymbolAt(uint idx) const;
+    // Returns a shared, non-owning pointer to the Symbol at the given offset.
+    const Symbol* getSymbolAt(uint idx) const;
 };
 
 #endif  // VIRTUAL_REEL_HPP

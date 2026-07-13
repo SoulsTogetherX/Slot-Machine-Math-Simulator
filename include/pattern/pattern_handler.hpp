@@ -25,11 +25,16 @@ public:
     void loadJson(const json& info, const ReelHandler& reel_handler);
 
     // Accessor Methods
-    bool hasPattern(string id) const;
-    Pattern& getPattern(string id) const;
+    bool hasPattern(const string& id) const;
+    Pattern& getPattern(const string& id) const;
+    // Returns non-owning views of every stored Pattern.
+    std::vector<const Pattern*> getAllPatterns() const;
 
     // Aggergate the accumulated stats from all patterns
     StatsHandler aggergateStats() const;
+    // Gets stats directly from a Pattern with given id
+    StatsHandler getDirectStats(const string& id) const;
+
 
     // Clears Patterns
     void clear();

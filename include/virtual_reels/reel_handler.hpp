@@ -33,16 +33,16 @@ public:
     void loadJson(const json& info, const SymbolHandler& symbol_handler);
 
     // Returns a slotmachine spin and returns the screen, via an array of symbols
-    std::vector<std::vector<Symbol>> runSpin();
+    SymbolGrid runSpin();
 
     // Accesor Methods
     uint getReelCount() const;
     uint getReelLength(uint reelNum) const;
     uint getMaxReelLength() const;
     uint getPayoutRows() const;
-    std::vector<std::vector<Symbol>> getSpinResult();
+    SymbolGrid getSpinResult();
 
-    StatsHandler getStats() const;
+    const StatsHandler& getStats() const;
 
     // Clears Reels and stats
     void clear();

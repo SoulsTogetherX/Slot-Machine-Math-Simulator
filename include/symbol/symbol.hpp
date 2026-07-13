@@ -1,6 +1,8 @@
 #ifndef SYMBOL_HPP
 #define SYMBOL_HPP
 
+#include <vector>
+
 #include "utilts/defs.hpp"
 
 
@@ -21,7 +23,11 @@ public:
     SYMBOL_TYPE getType() const;
 
     // Checks if the given Symbol matches this Symbol.
-    bool matches(Symbol symbol) const;
+    bool matches(const Symbol& symbol) const;
 };
+
+// Shared types for better readability.
+using SymbolLine = std::vector<const Symbol*>;               // one convolution / payline
+using SymbolGrid = std::vector<std::vector<const Symbol*>>;  // a full slot screen [reel][row]
 
 #endif  // SYMBOL_HPP

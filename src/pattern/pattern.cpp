@@ -5,14 +5,14 @@
 string Pattern::getId() const {
     return id;
 }
-StatsHandler Pattern::getStats() const {
+const StatsHandler& Pattern::getStats() const {
     return stats;
 }
 #pragma endregion
 
 #pragma region Pattern Convolution
-std::vector<std::vector<Symbol>> Pattern::convolution(
-    const std::vector<std::vector<Symbol>> &results 
+std::vector<SymbolLine> Pattern::convolution(
+    const SymbolGrid &results
 ) {
     auto ret = handleConvolution(results);
     stats.addSymbolMass(ret);
@@ -22,10 +22,10 @@ std::vector<std::vector<Symbol>> Pattern::convolution(
 #pragma endregion
 
 #pragma region Line Pattern
-std::vector<std::vector<Symbol>> LinePattern::handleConvolution(
-    const std::vector<std::vector<Symbol>> &results 
+std::vector<SymbolLine> LinePattern::handleConvolution(
+    const SymbolGrid &results
 ) const {
-    auto ret = std::vector<std::vector<Symbol>>();
+    auto ret = std::vector<SymbolLine>();
     ret.resize(1);
     ret[0].reserve(results.size());
 

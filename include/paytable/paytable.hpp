@@ -22,7 +22,7 @@ private:
     int payoutFail; // The payout gained from failing
 
     // Returns if the given convolution is considered a vaild win.
-    virtual bool isVaildMatch(const std::vector<Symbol>& result) const = 0;
+    virtual bool isVaildMatch(const SymbolLine& result) const = 0;
 public:
     PayTable() {};
     PayTable(
@@ -32,16 +32,16 @@ public:
     // Accessor Methods
     string getId() const;
     string getPatternId() const;
-    StatsHandler getStats() const;
+    const StatsHandler& getStats() const;
 
     // Returns the result of a convolution (payout and if a vaild win), while recording
     // the sstats.
-    PayoutResult evaluate(const std::vector<Symbol>& result);
+    PayoutResult evaluate(const SymbolLine& result);
 };
 
 class PayTableMatching : public PayTable {
 private:
-    bool isVaildMatch(const std::vector<Symbol>& result) const override;
+    bool isVaildMatch(const SymbolLine& result) const override;
 public:
     PayTableMatching() {};
     PayTableMatching(

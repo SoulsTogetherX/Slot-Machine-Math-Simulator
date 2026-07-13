@@ -14,7 +14,7 @@ void SymbolHandler::extractSymbols(const json& info) {
         throw std::invalid_argument("Symbols is expected to be array, but found: " + to_string(info));
     }
 
-    for (auto it : info) {
+    for (const auto& it : info) {
         string id = extractStr("id", it);
         if (symbols.find(id) != symbols.end()) {
             throw std::invalid_argument("Symbol'" + id + "' was previously defined.");
@@ -37,10 +37,10 @@ void SymbolHandler::extractSymbols(const json& info) {
 #pragma endregion
 
 #pragma region Accessor Methods
-bool SymbolHandler::hasSymbol(string id) const {
+bool SymbolHandler::hasSymbol(const string& id) const {
     return symbols.find(id) != symbols.end();
 }
-const Symbol& SymbolHandler::getSymbol(string id) const {
+const Symbol& SymbolHandler::getSymbol(const string& id) const {
     return symbols.at(id);
 }
 
@@ -48,7 +48,7 @@ std::vector<string> SymbolHandler::getSymbolIds() const {
     std::vector<string> ret;
     ret.reserve(symbols.size());
 
-    for(auto sym : symbols) {
+    for(const auto& sym : symbols) {
         ret.push_back(sym.first);
     }
 

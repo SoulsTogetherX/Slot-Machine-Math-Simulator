@@ -17,5 +17,10 @@ int main(int argc, char** argv) {
     // Creates the slotmachine
     SlotMachine machine = SlotMachine(pathname);
 
+    for(int i = 0; i < 1000; i++) {
+        machine.spinBet();
+    }
+    machine.printRaw();
+
     return 0;
 }

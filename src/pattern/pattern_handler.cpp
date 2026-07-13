@@ -13,7 +13,7 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
         throw std::invalid_argument("Patterns is expected to be array, but found: " + to_string(info));
     }
 
-    for(auto it : info) {
+    for(const auto& it : info) {
         string id = extractStr("id", it);
         if (hasPattern(id)) {
             throw std::invalid_argument("Pattern id '" + id + "' has already been defined.");
@@ -37,11 +37,20 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
 #pragma endregion
 
 #pragma region Accessor Methods
-bool PatternHandler::hasPattern(string id) const {
+bool PatternHandler::hasPattern(const string& id) const {
     return patterns.find(id) != patterns.end();
 }
-Pattern& PatternHandler::getPattern(string id) const {
+Pattern& PatternHandler::getPattern(const string& id) const {
     return *patterns.at(id);
+}
+std::vector<const Pattern*> PatternHandler::getAllPatterns() const {
+    auto ret = std::vector<const Pattern*>();
+    ret.reserve(patterns.size());
+
+    for(const auto& [key, value] : patterns) {
+        ret.push_back(value.get());
+    }
+    return ret;
 }
 #pragma endregion
 
@@ -52,6 +61,9 @@ StatsHandler PatternHandler::aggergateStats() const {
         ret.merge((*value).getStats());
     }
     return ret;
+}
+StatsHandler PatternHandler::getDirectStats(const string& id) const {
+    return patterns.at(id)->getStats();
 }
 #pragma endregion
 

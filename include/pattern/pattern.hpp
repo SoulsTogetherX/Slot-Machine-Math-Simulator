@@ -18,8 +18,8 @@ private:
     string id; // The Pattern's name
 
     // Returns one or more convolutions over the slot screen.
-    virtual std::vector<std::vector<Symbol>> handleConvolution(
-        const std::vector<std::vector<Symbol>> &results 
+    virtual std::vector<SymbolLine> handleConvolution(
+        const SymbolGrid &results
     ) const = 0;
 public:
     Pattern() {};
@@ -27,11 +27,11 @@ public:
 
     // Accessor Methods
     string getId() const;
-    StatsHandler getStats() const;
+    const StatsHandler& getStats() const;
 
     // Calls 'handleConvolution' and handles storage of stats process.
-    std::vector<std::vector<Symbol>> convolution(
-        const std::vector<std::vector<Symbol>> &results 
+    std::vector<SymbolLine> convolution(
+        const SymbolGrid &results
     );
 };
 
@@ -40,8 +40,8 @@ class LinePattern : public Pattern {
 private:
     uint row; // The row being convoluted over.
 
-    std::vector<std::vector<Symbol>> handleConvolution(
-        const std::vector<std::vector<Symbol>> &results 
+    std::vector<SymbolLine> handleConvolution(
+        const SymbolGrid &results
     ) const override;
 public:
     LinePattern() {};

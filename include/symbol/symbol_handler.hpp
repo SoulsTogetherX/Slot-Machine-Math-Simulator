@@ -22,8 +22,8 @@ public:
     void loadJson(const json& info);
 
     // Accessor Methods
-    bool hasSymbol(string id) const;
-    const Symbol& getSymbol(string id) const;
+    bool hasSymbol(const string& id) const;
+    const Symbol& getSymbol(const string& id) const;
     std::vector<string> getSymbolIds() const;
 
     // Clears Symbols

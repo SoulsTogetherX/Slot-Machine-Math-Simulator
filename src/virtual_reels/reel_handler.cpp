@@ -52,13 +52,13 @@ void ReelHandler::extractReels(const json& info, const SymbolHandler& symbol_han
 
     for(size_t i = 0; i < info.size(); i++) {
         auto& reel = reels[i];
-        auto reel_data = info.at(i);
+        const auto& reel_data = info.at(i);
 
         if (!reel_data.is_array()) {
             throw std::invalid_argument("'reels' can only contain either a string or object, but found: " + to_string(reel_data));
         }
         
-        for(auto symbol_data : reel_data) {
+        for(const auto& symbol_data : reel_data) {
             if (symbol_data.is_string()) {
                 // Direct Symbol
                 string id = symbol_data.get<string>();
@@ -87,7 +87,7 @@ void ReelHandler::extractReels(const json& info, const SymbolHandler& symbol_han
 #pragma endregion
 
 #pragma region Run Methods
-std::vector<std::vector<Symbol>> ReelHandler::runSpin() {
+SymbolGrid ReelHandler::runSpin() {
     for(uint i = 0; i < reels.size(); i++) {
         reels[i].spin(rng);
     }
@@ -100,8 +100,8 @@ std::vector<std::vector<Symbol>> ReelHandler::runSpin() {
 #pragma endregion
 
 #pragma region Accessor Methods
-std::vector<std::vector<Symbol>> ReelHandler::getSpinResult() {
-    auto ret = std::vector<std::vector<Symbol>>(reels.size(), std::vector<Symbol>());
+SymbolGrid ReelHandler::getSpinResult() {
+    auto ret = SymbolGrid(reels.size(), SymbolLine());
 
     for(uint i = 0; i < reels.size(); i++) {
         auto& reel = reels[i];
@@ -129,18 +129,21 @@ uint ReelHandler::getMaxReelLength() const {
     uint ret = 0;
     for(uint i = 0; i < getReelCount(); i++) {
         uint temp = getReelLength(i);
-        ret = ret < temp ? ret : temp;
+        ret = ret > temp ? ret : temp;
     }
     return ret;
 }
 
-StatsHandler ReelHandler::getStats() const {
+const StatsHandler& ReelHandler::getStats() const {
     return stats;
 }
 #pragma endregion
 
 #pragma region Helper
 void ReelHandler::seedFromHardware() {
+    std::random_device rd;
+    std::seed_seq seed{rd(), rd(), rd(), rd(), rd(), rd(), rd(), rd()};
+    rng.seed(seed);
 }
 void ReelHandler::clear() {
     payoutRows = 0;
