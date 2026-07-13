@@ -39,14 +39,22 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
 
 
 #pragma region Helpers
-void PatternHandler::clear() {
-    patterns.clear();
-}
-
 bool PatternHandler::hasPattern(string id) const {
     return patterns.find(id) != patterns.end();
 }
-const Pattern& PatternHandler::getPattern(string id) const {
+Pattern& PatternHandler::getPattern(string id) const {
     return *patterns.at(id);
+}
+
+StatsHandler PatternHandler::aggergateStats() const {
+    StatsHandler ret;
+    for (const auto& [key, value] : patterns) {
+        ret.merge((*value).getStats());
+    }
+    return ret;
+}
+
+void PatternHandler::clear() {
+    patterns.clear();
 }
 #pragma endregion

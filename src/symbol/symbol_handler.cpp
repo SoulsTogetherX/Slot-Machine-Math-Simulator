@@ -43,6 +43,16 @@ bool SymbolHandler::hasSymbol(string id) const {
 const Symbol& SymbolHandler::getSymbol(string id) const {
     return symbols.at(id);
 }
+std::vector<string> SymbolHandler::getSymbolIds() const {
+    std::vector<string> ret;
+    ret.reserve(symbols.size());
+
+    for(auto sym : symbols) {
+        ret.push_back(sym.first);
+    }
+
+    return ret;
+}
 
 void SymbolHandler::clear() {
     symbols.clear();

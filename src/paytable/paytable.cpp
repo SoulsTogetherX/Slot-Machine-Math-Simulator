@@ -1,6 +1,5 @@
 #include "paytable/paytable.hpp"
 #include "utilts/defs.hpp"
-#include "utilts/spinResult.hpp"
 
 
 #pragma region Helper
@@ -14,32 +13,22 @@ string PayTable::getPatternId() const {
 
 
 #pragma region PayTable
-#include <iostream>
-SpinResult PayTable::evaluate(const std::vector<Symbol>& result) const {
-    SpinResult ret;
-    ret.payoutWon = isVaildMatch(result);
+StatsHandler PayTable::getStats() const {
+    return stats;
+}
+PayoutResult PayTable::evaluate(const std::vector<Symbol>& result) {
+    PayoutResult payout;
+    if (isVaildMatch(result)) {
+        stats.addSymbols(result);
+        stats.increaseCount(1);
 
-    if (ret.payoutWon) {
-        ret.payout = 0;
+        payout.won = true;
+        payout.payout = 1;
     } else {
-        ret.payout = 0;
+        payout.won = false;
+        payout.payout = 0;
     }
-
-    ret.pattern_id = getPatternId();
-    ret.payout_id = getId();
-    ret.symbols = result;
-
-    std::cout << ret.pattern_id << std::endl;
-    std::cout << ret.payout_id << std::endl;
-    std::cout << ret.payout << std::endl;
-    std::cout << ret.payoutWon << std::endl;
-    std::cout << "[";
-    for(auto sym : ret.symbols) {
-        std::cout << sym.getId() << ", ";
-    }
-    std::cout << "]" << std::endl;
-
-    return ret;
+    return payout;
 }
 #pragma endregion
 

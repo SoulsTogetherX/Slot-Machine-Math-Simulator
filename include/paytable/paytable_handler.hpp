@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "utilts/defs.hpp"
-#include "utilts/spinResult.hpp"
+#include "utilts/payout_result.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "pattern/pattern_handler.hpp"
 #include "paytable/paytable.hpp"
@@ -25,11 +25,12 @@ public:
     );
 
     bool hasPayTable(string id) const;
-    const PayTable& getPayTable(string id) const;
+    PayTable& getPayTable(string id) const;
 
-    std::vector<SpinResult> evaluateAll(
+    StatsHandler aggergateStats() const;
+    std::vector<PayoutResult> evaluateAll(
         const std::vector<std::vector<Symbol>> &results, const PatternHandler& pattern_handler
-    ) const;
+    );
 
     void clear();
 };

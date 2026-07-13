@@ -20,6 +20,8 @@ public:
     bool hasSymbol(string id) const;
     const Symbol& getSymbol(string id) const;
 
+    std::vector<string> getSymbolIds() const;
+
     void clear();
 };
 

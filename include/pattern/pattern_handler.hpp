@@ -19,7 +19,9 @@ public:
     void loadJson(const json& info, const ReelHandler& reel_handler);
 
     bool hasPattern(string id) const;
-    const Pattern& getPattern(string id) const;
+    Pattern& getPattern(string id) const;
+
+    StatsHandler aggergateStats() const;
 
     void clear();
 };

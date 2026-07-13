@@ -8,7 +8,7 @@
 
 
 inline string extractStr(const string&key, const json& j, std::optional<string> base = {}) {
-    if (!j.contains(key)) {
+    if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
         }
@@ -22,7 +22,7 @@ inline string extractStr(const string&key, const json& j, std::optional<string> 
     return info.get<std::string>();
 }
 inline int extractInt(const string&key, const json& j, std::optional<int> base = {}) {
-    if (!j.contains(key)) {
+    if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
         }

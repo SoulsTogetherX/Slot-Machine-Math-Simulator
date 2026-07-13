@@ -5,6 +5,7 @@
 #include <random>
 
 #include "utilts/defs.hpp"
+#include "stats/stats_handler.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "virtual_reels/reel.hpp"
 
@@ -12,8 +13,9 @@
 
 class ReelHandler {
 private:
+    StatsHandler stats;
+
     uint payoutRows;
-    int seed;
 
     std::mt19937 rng;
     std::vector<VirtualReel> reels;
@@ -27,15 +29,16 @@ public:
     void loadJson(const json& info, const SymbolHandler& symbol_handler);
 
     std::vector<std::vector<Symbol>> runSpin();
-    std::vector<std::vector<Symbol>> getPrevResult();
+    std::vector<std::vector<Symbol>> getSpinResult();
 
     uint getReelCount() const;
     uint getReelLength(uint reelNum) const;
     uint getMaxReelLength() const;
     uint getPayoutRows() const;
+    
+    StatsHandler getStats() const;
 
     void clear();
 };
-
 
 #endif  // VIRTUAL_REEL_HANDLER_HPP

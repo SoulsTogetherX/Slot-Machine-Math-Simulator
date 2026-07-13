@@ -24,7 +24,6 @@ void ReelHandler::extractPayoutRows(const json& info) {
 }
 
 void ReelHandler::extractSeed(const json& info) {
-    // "seed" missing entirely -> behave the same as "auto"
     if (!info.contains("seed") || info.at("seed").is_null()) {
         seedFromHardware();
         return;
@@ -33,8 +32,7 @@ void ReelHandler::extractSeed(const json& info) {
     const json& seed_info = info.at("seed");
 
     if (seed_info.is_number_integer()) {
-        seed = seed_info.get<int>();
-        rng.seed(static_cast<std::mt19937::result_type>(seed));
+        rng.seed(static_cast<std::mt19937::result_type>(seed_info.get<int>()));
         return;
     } else if (seed_info.is_string()) {
         string str_check = seed_info.get<string>();
@@ -49,7 +47,6 @@ void ReelHandler::extractSeed(const json& info) {
 }
 
 void ReelHandler::seedFromHardware() {
-    seed = -1;
     std::random_device rd;
     rng.seed(rd());
 }
@@ -103,9 +100,12 @@ std::vector<std::vector<Symbol>> ReelHandler::runSpin() {
         reels[i].spin(rng);
     }
 
-    return getPrevResult();
+    auto results = getSpinResult();
+    stats.addSymbolMass(results);
+    stats.increaseCount(1);
+    return results;
 }
-std::vector<std::vector<Symbol>> ReelHandler::getPrevResult() {
+std::vector<std::vector<Symbol>> ReelHandler::getSpinResult() {
     auto ret = std::vector<std::vector<Symbol>>(reels.size(), std::vector<Symbol>());
 
     for(uint i = 0; i < reels.size(); i++) {
@@ -139,8 +139,13 @@ uint ReelHandler::getMaxReelLength() const {
     return ret;
 }
 
+StatsHandler ReelHandler::getStats() const {
+    return stats;
+}
+
 void ReelHandler::clear() {
     payoutRows = 0;
+    stats.clear();
     reels.clear();
 }
 #pragma endregion

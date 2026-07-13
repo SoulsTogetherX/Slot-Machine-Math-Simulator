@@ -46,15 +46,15 @@ void PayTableHandler::extractPayTables(
 bool PayTableHandler::hasPayTable(string id) const {
     return paytables.find(id) != paytables.end();
 }
-const PayTable& PayTableHandler::getPayTable(string id) const {
+PayTable& PayTableHandler::getPayTable(string id) const {
     return *paytables.at(id);
 }
 
-std::vector<SpinResult> PayTableHandler::evaluateAll(
+std::vector<PayoutResult> PayTableHandler::evaluateAll(
     const std::vector<std::vector<Symbol>> &results,
     const PatternHandler& pattern_handler
-) const {
-    auto ret = std::vector<SpinResult>();
+) {
+    auto ret = std::vector<PayoutResult>();
     ret.reserve(paytables.size());
 
     for(const auto& paytable : paytables) {
@@ -67,6 +67,14 @@ std::vector<SpinResult> PayTableHandler::evaluateAll(
         }
     }
 
+    return ret;
+}
+
+StatsHandler PayTableHandler::aggergateStats() const {
+    StatsHandler ret;
+    for (const auto& [key, value] : paytables) {
+        ret.merge((*value).getStats());
+    }
     return ret;
 }
 
