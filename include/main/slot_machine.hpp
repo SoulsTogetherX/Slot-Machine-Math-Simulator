@@ -18,7 +18,6 @@ private:
     // Identifier
     string name;
 
-    // Compoenent Classes
     SymbolHandler symbol_handler;
     ReelHandler reel_handler;
     PatternHandler pattern_handler;
@@ -28,22 +27,21 @@ private:
     // so each spin convolves only the patterns that are actually scored.
     std::vector<string> referenced_patterns;
 
-    // The total amount wagered on each spin (config "bet", default 1).
-    double wager = 1;
+    // The base wager: how much is staked on each spin.
+    uint bet_wager;
 
     // Running bet statistics for the current session of spins.
     SessionStats session;
 public:
-    // Constructors
     SlotMachine();
     SlotMachine(string pathname);
     SlotMachine(const json& info);
 
     // Loads a SlotMachine's data from a json file.
     void loadPath(string pathname);
+    // Loads a SlotMachine's data from a json object.
     void loadJson(const json& info);
 
-    // Accessor Methods
     string getName() const;
     
     const SymbolHandler& getSymbolHandler() const;

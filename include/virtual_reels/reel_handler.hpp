@@ -36,7 +36,6 @@ public:
     // Returns a slotmachine spin and returns the screen, via an array of symbols
     SymbolGrid runSpin();
 
-    // Accesor Methods
     uint getReelCount() const;
     uint getReelLength(uint reelNum) const;
     uint getMaxReelLength() const;

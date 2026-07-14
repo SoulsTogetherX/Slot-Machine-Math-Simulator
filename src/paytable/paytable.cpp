@@ -17,49 +17,60 @@ const StatsHandler& PayTable::getStats() const {
 #pragma endregion
 
 #pragma region Run Methods
-PayoutResult PayTable::evaluate(const SymbolLine& result) {
-    PayoutResult payout_result;
-    if (isVaildMatch(result)) {
-        stats.addSymbols(result);
-        stats.increaseCount(1);
+PayoutResult PayTable::evaluate(const SymbolLine& line) {
+    bool won = false;
+    int payout = scoreLine(line, won);
 
-        payout_result.won = true;
-        payout_result.payout = payoutWin;
-    } else {
-        payout_result.won = false;
-        payout_result.payout = payoutFail;
+    if (won) {
+        int multiplier = 1;
+        for (const Symbol* s : line) {
+            multiplier *= s->getMultiplier();
+        }
+        payout *= multiplier;
+
+        stats.addSymbols(line);
+        stats.increaseCount(1);
     }
-    return payout_result;
+
+    PayoutResult result;
+    result.won = won;
+    result.payout = payout;
+    return result;
 }
 #pragma endregion
 
 #pragma region PayTable Matching
-bool PayTableMatching::isVaildMatch(const SymbolLine& result) const {
-    if (result.empty()) {
+bool PayTableMatching::isMatch(const SymbolLine& line) const {
+    if (line.empty()) {
         return false;
     }
 
     uint idx = 0;
     const Symbol* base = nullptr;
 
-    for(; idx < result.size(); idx++) {
-        if (result[idx]->getType() != WILD) {
-            base = result[idx];
+    for(; idx < line.size(); idx++) {
+        if (line[idx]->getType() != WILD) {
+            base = line[idx];
             break;
         }
     }
-
-    // Every symbol was WILD, so the line trivially matches.
     if (base == nullptr) {
         return true;
     }
 
-    for(; idx < result.size(); idx++) {
-        if (!result[idx]->matches(*base)) {
+    for(; idx < line.size(); idx++) {
+        if (!line[idx]->matches(*base)) {
             return false;
         }
     }
-
     return true;
+}
+int PayTableMatching::scoreLine(const SymbolLine& line, bool& won) const {
+    if (isMatch(line)) {
+        won = true;
+        return payoutWin;
+    }
+    won = false;
+    return payoutFail;
 }
 #pragma endregion

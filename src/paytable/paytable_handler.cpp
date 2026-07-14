@@ -30,12 +30,14 @@ void PayTableHandler::extractPayTables(
             throw std::invalid_argument("Pattern id '" + pattern_id + "' has not been defined.");
         }
 
-        int payout = extractInt("payoutWin", it);
         int payoutFail = extractInt("payoutFail", it, 0);
         string symbol_requirement = extractStr("symbol_requirement", it);
-        
+
         if (symbol_requirement == "matching") {
-            paytables[id] = std::make_unique<PayTableMatching>(id, pattern_id, payout, payoutFail);
+            int payout = extractInt("payoutWin", it);
+            paytables[id] = std::make_unique<PayTableMatching>(
+                id, pattern_id, payout, payoutFail
+            );
             continue;
         } else {
             throw std::invalid_argument("Paytable's 'symbol_requirement' is an invaild value.");

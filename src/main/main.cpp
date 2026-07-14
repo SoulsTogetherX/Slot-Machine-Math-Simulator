@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv) {
     // Gets pathname
-    std::string pathname = "data/example.json";
+    std::string pathname = "data/examples/example.json";
     if (argc > 1) {
         pathname = argv[1];
     }

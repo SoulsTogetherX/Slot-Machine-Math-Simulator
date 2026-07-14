@@ -31,9 +31,9 @@ public:
         const SymbolGrid& screen, const std::vector<string>& pattern_ids
     );
 
-    // Accessor Methods
     bool hasPattern(const string& id) const;
     Pattern& getPattern(const string& id) const;
+    
     // Returns non-owning views of every stored Pattern.
     std::vector<const Pattern*> getAllPatterns() const;
 

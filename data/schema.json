@@ -8,9 +8,7 @@
     "payout_rows": {
       "type": "integer"
     },
-    "bet": {
-      "type": "integer"
-    },
+    "bet": { "type": "integer" },
     "seed": {
       "anyOf": [{ "type": "string" }, { "type": "integer" }]
     },
@@ -24,7 +22,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["normal", "wild"]
+            "enum": ["normal", "wild", "scatter", "bonus"]
+          },
+          "multiplier": {
+            "type": "integer"
           }
         },
         "required": ["id", "type"]
@@ -44,9 +45,12 @@
                 },
                 "repeat": {
                   "type": "integer"
+                },
+                "weight": {
+                  "type": "integer"
                 }
               },
-              "required": ["id", "repeat"]
+              "required": ["id"]
             },
             {
               "type": "string"
@@ -70,7 +74,10 @@
                 "const": "line"
               },
               "row": {
-                "type": "integer"
+                "anyOf": [
+                  { "type": "integer" },
+                  { "type": "array", "items": { "type": "integer" } }
+                ]
               },
               "filter": {
                 "type": "array",

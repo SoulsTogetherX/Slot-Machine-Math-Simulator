@@ -1,5 +1,5 @@
 {
-  "$schema": "./schema.json",
+  "$schema": "../schema.json",
   "name": "example_game",
   "payout_rows": 1,
   "seed": "auto",

@@ -42,7 +42,7 @@ void SlotMachine::loadJson(const json& data) {
     name = extractStr("name", data, "default-slotmachine-name");
 
     // Wager placed per spin
-    wager = extractInt("bet", data, 1);
+    bet_wager = extractInt("bet", data, 1);
 
     // Symbols
     symbol_handler.loadJson(data);
@@ -91,7 +91,8 @@ void SlotMachine::spinBet() {
     auto cache = pattern_handler.convolveAll(screen, referenced_patterns);
     auto payouts = paytable_handler.evaluateAll(cache);
 
-    // Split this spin's return into won money and consolation money.
+    // Split this spin's return (in credits) into won money and consolation money,
+    // then convert to currency using the denomination.
     double won = 0;
     double consolation = 0;
     for (const PayoutResult& result : payouts) {
@@ -101,7 +102,7 @@ void SlotMachine::spinBet() {
             consolation += result.payout;
         }
     }
-    session.record(wager, won, consolation);
+    session.record(bet_wager, won, consolation);
 }
 #pragma endregion
 
@@ -114,7 +115,7 @@ void SlotMachine::printRaw() const {
 
     std::cout << "===== " << name << " =====\n";
     std::cout << "Spins:      " << spins << "\n";
-    std::cout << "Wager/spin: " << wager << "\n\n";
+    std::cout << "Wager/spin: " << bet_wager << "\n\n";
 
     std::cout << "-- Financials --\n";
     std::cout << "Total wagered:     " << session.getTotalWager() << "\n";
@@ -136,14 +137,15 @@ void SlotMachine::printRaw() const {
     std::cout << "Screen symbol distribution:\n";
     std::cout << reel_stats.serializeSymbols() << "\n";
 
-    std::cout << "Paytable hits:\n";
+    std::cout << "\tPaytable hits:\n";
     for (const PayTable* paytable : paytable_handler.getAllPayTables()) {
         const uint hits = paytable->getStats().getCount();
-        std::cout << "  " << paytable->getId() << ": " << hits << " hit(s)";
+        std::cout << "  ==  " << paytable->getId() << "  ==  \n";
+        std::cout << hits << " hit(s)";
         if (spins > 0) {
             std::cout << " (" << (100.0 * hits / spins) << "% of spins)";
         }
-        std::cout << "\n";
+        std::cout << "\n" << paytable->getStats().serializeSymbols() << "\n";
     }
 }
 #pragma endregion
@@ -152,6 +154,7 @@ void SlotMachine::printRaw() const {
 // Clears all data
 void SlotMachine::clear() {
     name = "";
+    bet_wager = 1;
 
     symbol_handler.clear();
     reel_handler.clear();
@@ -159,7 +162,6 @@ void SlotMachine::clear() {
     paytable_handler.clear();
 
     referenced_patterns.clear();
-    wager = 1;
     session.clear();
 }
 #pragma endregion

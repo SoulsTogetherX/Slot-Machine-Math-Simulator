@@ -2,6 +2,7 @@
 #define SESSION_STATS_HPP
 
 #include <cstdint>
+#include <array>
 
 #include "utilts/defs.hpp"
 
@@ -12,8 +13,8 @@
 // frequency, volatility). Won money and consolation money are tracked separately.
 class SessionStats {
 private:
-    uint64_t spins = 0;
-    uint64_t win_spins = 0;         // spins that returned won money ( > 0 )
+    uint spins = 0;
+    uint win_spins = 0;
 
     double total_wager = 0;
     double total_won = 0;           // money from winning (won == true) payouts
@@ -27,21 +28,20 @@ private:
     double mean_ratio = 0;
     double m2_ratio = 0;
 
-    uint64_t cur_loss_streak = 0;
-    uint64_t max_loss_streak = 0;
+    uint cur_loss_streak = 0;
+    uint max_loss_streak = 0;
 public:
     // Records one spin's outcome (won and consolation money for that spin).
     void record(double wager, double won, double consolation);
 
-    // Raw accessors
-    uint64_t getSpins() const;
-    uint64_t getWinSpins() const;
+    uint getSpins() const;
+    uint getWinSpins() const;
     double getTotalWager() const;
     double getTotalWon() const;
     double getTotalConsolation() const;
     double getTotalReturn() const;      // won + consolation
     double getMaxWin() const;
-    uint64_t getMaxLossStreak() const;
+    uint getMaxLossStreak() const;
 
     // Derived math (all guard against division by zero)
     double rtp() const;                 // total return / total wager

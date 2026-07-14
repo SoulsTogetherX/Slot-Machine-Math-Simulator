@@ -1,28 +1,45 @@
+#include <algorithm>
+
 #include "virtual_reels/reel.hpp"
 #include "utilts/defs.hpp"
 
 
 
-#pragma region Acess Methods
+#pragma region Assessor Methods
 const Symbol* VirtualReel::getSymbolAt(uint idx) const {
-    if (reel.empty()) {
+    if (strip.empty()) {
         throw std::out_of_range("Index out of bounds: " + std::to_string(idx));
     }
-    return reel.at((currentPos + idx) % reel.size());
+    return strip[(current_pos + idx) % strip.size()];
 }
 
-void VirtualReel::addSymbol(const Symbol &s, uint repeat) {
-    reel.insert(reel.end(), repeat, &s);
-    dist = std::uniform_int_distribution<int>(0, static_cast<int>(reel.size()) - 1);
+void VirtualReel::addStop(const Symbol &s, uint weight) {
+    strip.push_back(&s);
+    total_weight += weight;
+    cum_weights.push_back(total_weight);
+
+    if (total_weight > 0) {
+        dist = std::uniform_int_distribution<uint>(0, total_weight - 1);
+    }
 }
 
-uint VirtualReel::getReelLength() const {
-    return reel.size();
+uint VirtualReel::getStripLength() const {
+    return strip.size();
+}
+uint VirtualReel::getTotalWeight() const {
+    return total_weight;
 }
 #pragma endregion
 
 #pragma region Run Methods
 void VirtualReel::spin(std::mt19937 &rng) {
-    currentPos = dist(rng);
+    if (total_weight == 0) {
+        return;
+    }
+
+    const uint v = dist(rng);
+    current_pos = static_cast<uint>(
+        std::upper_bound(cum_weights.begin(), cum_weights.end(), v) - cum_weights.begin()
+    );
 }
 #pragma endregion

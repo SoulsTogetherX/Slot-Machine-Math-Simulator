@@ -60,26 +60,33 @@ void ReelHandler::extractReels(const json& info, const SymbolHandler& symbol_han
         
         for(const auto& symbol_data : reel_data) {
             if (symbol_data.is_string()) {
-                // Direct Symbol
+                // Direct Symbol: a single, evenly-weighted physical stop.
                 string id = symbol_data.get<string>();
                 if (!symbol_handler.hasSymbol(id)) {
                     throw std::invalid_argument("Symbol '" + id + "' not defined in symbol table.");
                 }
 
-                reel.addSymbol(symbol_handler.getSymbol(id), 1);
+                reel.addStop(symbol_handler.getSymbol(id), 1);
                 continue;
             } else if (symbol_data.is_object()) {
                 string id = extractStr("id", symbol_data);
-                uint repeat = extractInt("repeat", symbol_data);
-
                 if (!symbol_handler.hasSymbol(id)) {
                     throw std::invalid_argument("Symbol '" + id + "' not defined in symbol table.");
                 }
 
-                reel.addSymbol(symbol_handler.getSymbol(id), repeat);
+                int repeat = extractInt("repeat", symbol_data, 1);
+                int weight = extractInt("weight", symbol_data, 1);
+                if (repeat < 0 || weight < 0) {
+                    throw std::invalid_argument("'repeat' and 'weight' must be non-negative.");
+                }
+
+                const Symbol& sym = symbol_handler.getSymbol(id);
+                for (int k = 0; k < repeat; k++) {
+                    reel.addStop(sym, static_cast<uint>(weight));
+                }
                 continue;
             }
-        
+
             throw std::invalid_argument("'reels' can only contain either a string or object, but found: " + to_string(symbol_data));
         }
     }
@@ -123,7 +130,7 @@ uint ReelHandler::getPayoutRows() const {
     return payoutRows;
 }
 uint ReelHandler::getReelLength(uint reelNum) const {
-    return reels[reelNum].getReelLength();
+    return reels[reelNum].getStripLength();
 }
 uint ReelHandler::getMaxReelLength() const {
     uint ret = 0;
@@ -142,8 +149,7 @@ const StatsHandler& ReelHandler::getStats() const {
 #pragma region Helper
 void ReelHandler::seedFromHardware() {
     std::random_device rd;
-    std::seed_seq seed{rd(), rd(), rd(), rd(), rd(), rd(), rd(), rd()};
-    rng.seed(seed);
+    rng.seed(rd());
 }
 void ReelHandler::clear() {
     payoutRows = 0;

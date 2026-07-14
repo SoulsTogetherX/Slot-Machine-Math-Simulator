@@ -19,4 +19,7 @@ string Symbol::getId() const {
 SYMBOL_TYPE Symbol::getType() const {
     return type;
 }
+int Symbol::getMultiplier() const {
+    return multiplier;
+}
 #pragma endregion

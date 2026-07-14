@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema.json",
+  "name": "multi_line_demo",
+  "payout_rows": 3,
+  "seed": 555,
+  "bet": 3,
+  "symbols": [
+    { "id": "A", "type": "normal" },
+    { "id": "B", "type": "normal" },
+    { "id": "W", "type": "wild" }
+  ],
+  "reels": [
+    [
+      { "id": "A", "weight": 2 },
+      { "id": "B", "weight": 2 },
+      { "id": "W", "weight": 1 }
+    ],
+    [
+      { "id": "A", "weight": 2 },
+      { "id": "B", "weight": 2 },
+      { "id": "W", "weight": 1 }
+    ],
+    [
+      { "id": "A", "weight": 2 },
+      { "id": "B", "weight": 2 },
+      { "id": "W", "weight": 1 }
+    ]
+  ],
+  "patterns": [{ "id": "all_rows", "match_type": "line", "row": [1, 2, 3] }],
+  "paytables": [
+    {
+      "id": "pt",
+      "pattern_id": "all_rows",
+      "symbol_requirement": "matching",
+      "payoutWin": 1
+    }
+  ]
+}

@@ -27,11 +27,16 @@ void SymbolHandler::extractSymbols(const json& info) {
             type = NORMAL;
         } else if (str_type == "wild") {
             type = WILD;
+        } else if (str_type == "scatter") {
+            type = SCATTER;
+        } else if (str_type == "bonus") {
+            type = BONUS;
         } else {
-            throw std::invalid_argument("Unknown 'type' found.");
+            throw std::invalid_argument("Unknown 'type' found: " + str_type);
         }
-        
-        symbols[id] = Symbol(id, type);
+
+        int multiplier = extractInt("multiplier", it, 1);
+        symbols[id] = Symbol(id, type, multiplier);
     }
 }
 #pragma endregion

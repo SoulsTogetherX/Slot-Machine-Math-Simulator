@@ -36,14 +36,30 @@ void SessionStats::record(double wager, double won, double consolation) {
 #pragma endregion
 
 #pragma region Raw Accessors
-uint64_t SessionStats::getSpins() const { return spins; }
-uint64_t SessionStats::getWinSpins() const { return win_spins; }
-double SessionStats::getTotalWager() const { return total_wager; }
-double SessionStats::getTotalWon() const { return total_won; }
-double SessionStats::getTotalConsolation() const { return total_consolation; }
-double SessionStats::getTotalReturn() const { return total_won + total_consolation; }
-double SessionStats::getMaxWin() const { return max_win; }
-uint64_t SessionStats::getMaxLossStreak() const { return max_loss_streak; }
+uint SessionStats::getSpins() const {
+    return spins;
+}
+uint SessionStats::getWinSpins() const {
+    return win_spins;
+}
+double SessionStats::getTotalWager() const {
+    return total_wager;
+}
+double SessionStats::getTotalWon() const {
+    return total_won;
+}
+double SessionStats::getTotalConsolation() const {
+    return total_consolation;
+}
+double SessionStats::getTotalReturn() const {
+    return total_won + total_consolation;
+}
+double SessionStats::getMaxWin() const {
+    return max_win;
+}
+uint SessionStats::getMaxLossStreak() const {
+    return max_loss_streak;
+}
 #pragma endregion
 
 #pragma region Derived Math

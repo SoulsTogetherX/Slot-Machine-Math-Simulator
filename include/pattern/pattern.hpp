@@ -15,39 +15,31 @@
 // Overwrite 'handleConvolution' to handle different convolution types.
 class Pattern {
 private:
-    StatsHandler stats;
-
     string id; // The Pattern's name
-
-    // Returns one or more convolutions over the slot screen.
-    virtual std::vector<SymbolLine> handleConvolution(
-        const SymbolGrid &results
-    ) const = 0;
 public:
     Pattern() {};
     Pattern(string id) : id(id) {};
 
     // Accessor Methods
     string getId() const;
-    const StatsHandler& getStats() const;
 
-    // Calls 'handleConvolution' and handles storage of stats process.
-    std::vector<SymbolLine> convolution(
+    // Returns one or more convolutions over the slot screen.
+    virtual std::vector<SymbolLine> convolution(
         const SymbolGrid &results
-    );
+    ) const = 0;
 };
 
-// The class that convolutions the slot screen in a horizontal row pattern.
+// The class that convolutions the slot screen into horizontal row paylines.
 class LinePattern : public Pattern {
 private:
-    uint row; // The row being convoluted over.
-
-    std::vector<SymbolLine> handleConvolution(
-        const SymbolGrid &results
-    ) const override;
+    std::vector<uint> rows; // The rows being convoluted over.
 public:
     LinePattern() {};
-    LinePattern(string id, uint row) : Pattern(id), row(row) {};
+    LinePattern(string id, std::vector<uint> rows) : Pattern(id), rows(std::move(rows)) {};
+
+    std::vector<SymbolLine> convolution(
+        const SymbolGrid &results
+    ) const override;
 };
 
 #endif  // PATTERN_HPP

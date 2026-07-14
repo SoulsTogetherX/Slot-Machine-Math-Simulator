@@ -8,7 +8,7 @@
 
 
 // A helper method to extract strings from json easier
-inline string extractStr(const string&key, const json& j, std::optional<string> base = {}) {
+inline string extractStr(const string& key, const json& j, std::optional<string> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
@@ -23,7 +23,7 @@ inline string extractStr(const string&key, const json& j, std::optional<string> 
     return info.get<std::string>();
 }
 // A helper method to extract ints from json easier
-inline int extractInt(const string&key, const json& j, std::optional<int> base = {}) {
+inline int extractInt(const string& key, const json& j, std::optional<int> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
@@ -39,6 +39,42 @@ inline int extractInt(const string&key, const json& j, std::optional<int> base =
         throw std::invalid_argument("Expected to find integer, but found: " + to_string(info));
     }
     return info.get<int>();
+}
+// A helper method to extract booleans from json easier
+inline bool extractBool(const string& key, const json& j, std::optional<bool> base = {}) {
+    if (!j.contains(key) || j.at(key).is_null()) {
+        if (base) {
+            return *base;
+        }
+        throw std::out_of_range("key '" + key + "' not found.");
+    }
+
+    auto info = j.at(key);
+    if (!info.is_boolean()) {
+        if (base) {
+            return *base;
+        }
+        throw std::invalid_argument("Expected to find boolean, but found: " + to_string(info));
+    }
+    return info.get<bool>();
+}
+// A helper method to extract doubles from json easier
+inline double extractDouble(const string& key, const json& j, std::optional<double> base = {}) {
+    if (!j.contains(key) || j.at(key).is_null()) {
+        if (base) {
+            return *base;
+        }
+        throw std::out_of_range("key '" + key + "' not found.");
+    }
+
+    auto info = j.at(key);
+    if (!info.is_number()) {
+        if (base) {
+            return *base;
+        }
+        throw std::invalid_argument("Expected to find number, but found: " + to_string(info));
+    }
+    return info.get<double>();
 }
 
 #endif  // EXTRACTS_HPP

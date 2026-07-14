@@ -4,9 +4,9 @@
 #include "symbol/symbol.hpp"
 
 //      Complex types
-// one convolution / payline
+// A convolution: array of Symbols
 using SymbolLine = std::vector<const Symbol*>;
-// a full slot screen [reel][row]
+// A full slot screen [reel][row]
 using SymbolGrid = std::vector<std::vector<const Symbol*>>;
 // Cache of convolutions produced by every referenced Pattern in a single spin.
 // (pattern id, vector<SymbolLine>).

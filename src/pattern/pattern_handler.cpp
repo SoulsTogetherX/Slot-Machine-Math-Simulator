@@ -5,6 +5,40 @@
 
 
 #pragma region Extract Info Helpers
+static std::vector<uint> extractRows(const json& it, uint payout_rows) {
+    if (!it.contains("row") || it.at("row").is_null()) {
+        throw std::out_of_range("Line pattern requires a 'row'.");
+    }
+
+    const json& row_info = it.at("row");
+    std::vector<uint> rows;
+
+    auto add_row = [&](int r) {
+        if (r <= 0 || static_cast<uint>(r) > payout_rows) {
+            throw std::range_error("Line pattern has an invalid row: " + std::to_string(r));
+        }
+        rows.push_back(static_cast<uint>(r));
+    };
+
+    if (row_info.is_number_integer()) {
+        add_row(row_info.get<int>());
+    } else if (row_info.is_array()) {
+        if (row_info.empty()) {
+            throw std::invalid_argument("Line pattern 'row' array must not be empty.");
+        }
+        for (const auto& r : row_info) {
+            if (!r.is_number_integer()) {
+                throw std::invalid_argument("Line pattern 'row' array must contain integers.");
+            }
+            add_row(r.get<int>());
+        }
+    } else {
+        throw std::invalid_argument("Line pattern 'row' must be an integer or an array of integers.");
+    }
+
+    return rows;
+}
+
 void PatternHandler::loadJson(const json& info, const ReelHandler& reel_handler) {
     extractPatterns(info.at("patterns"), reel_handler);
 }
@@ -21,13 +55,8 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
 
         string match_type = extractStr("match_type", it);
         if (match_type == "line") {
-            uint row = extractInt("row", it);
-            if (0 >= row || row > reel_handler.getPayoutRows()) {
-                throw std::range_error("Pattern '" + match_type + "' type has an invaild row.");
-                return;
-            }
-
-            patterns[id] = std::make_unique<LinePattern>(id, row);
+            std::vector<uint> rows = extractRows(it, reel_handler.getPayoutRows());
+            patterns[id] = std::make_unique<LinePattern>(id, rows);
             continue;
         } else {
             throw std::invalid_argument("Pattern's '" + match_type + "' is an invaild value.");
@@ -65,19 +94,6 @@ std::vector<const Pattern*> PatternHandler::getAllPatterns() const {
         ret.push_back(value.get());
     }
     return ret;
-}
-#pragma endregion
-
-#pragma region Stats
-StatsHandler PatternHandler::aggergateStats() const {
-    StatsHandler ret;
-    for (const auto& [key, value] : patterns) {
-        ret.merge((*value).getStats());
-    }
-    return ret;
-}
-StatsHandler PatternHandler::getDirectStats(const string& id) const {
-    return patterns.at(id)->getStats();
 }
 #pragma endregion
 

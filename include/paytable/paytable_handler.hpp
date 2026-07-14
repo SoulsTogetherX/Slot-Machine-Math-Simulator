@@ -31,9 +31,9 @@ public:
         const json& info, const PatternHandler& pattern_handler
     );
 
-    // Accessor Methods
     bool hasPayTable(const string& id) const;
     PayTable& getPayTable(const string& id) const;
+
     // Returns non-owning views of every stored PayTable.
     std::vector<const PayTable*> getAllPayTables() const;
     // Returns the unique set of pattern ids referenced by the stored PayTables.
@@ -44,8 +44,7 @@ public:
     // Gets stats directly from a Paytable with given id
     StatsHandler getDirectStats(const string& id) const;
 
-    // Evaluates every PayTable against its pattern's pre-computed convolutions,
-    // returning a PayoutResult for each convolution scored.
+    // Evaluates every PayTable against its pattern's pre-computed convolutions.
     std::vector<PayoutResult> evaluateAll(const ConvolutionCache& cache);
 
     void clear();

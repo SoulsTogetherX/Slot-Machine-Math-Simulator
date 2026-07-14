@@ -9,23 +9,26 @@
 
 
 
-// A class representing the Virtual Reel of a slotmachine.
+// A class representing a single Virtual Reel of a slotmachine.
 class VirtualReel {
 private:
-    std::vector<const Symbol*> reel; // Symbols on the Reel, in order.
-    std::uniform_int_distribution<int> dist;
+    std::vector<const Symbol*> strip; // Physical band, in order (defines adjacency).
+    std::vector<uint> cum_weights;    // Running total of virtual stops, one per stop.
+    uint total_weight = 0;            // Total number of virtual stops on the reel.
 
-    uint currentPos = 0; // Current Position on the Reel
+    std::uniform_int_distribution<uint> dist;
+    uint current_pos = 0;             // Current physical stop index.
 public:
-    // Spins the Reel once
+    // Spins the Reel once, landing on a physical stop chosen by virtual-stop weight.
     void spin(std::mt19937 &rng);
 
-    // Adds a symbol to the Reel
-    void addSymbol(const Symbol &s, uint repeat);
+    // Appends one physical stop of the symbol carrying 'weight' virtual stops.
+    void addStop(const Symbol &s, uint weight);
 
-    // Accessor Methods
-    uint getReelLength() const;
-    // Returns a shared, non-owning pointer to the Symbol at the given offset.
+    uint getStripLength() const;   // Number of physical stops (the reel's length).
+    uint getTotalWeight() const;   // Number of virtual stops.
+    
+    // Returns a shared, non-owning pointer to the Symbol 'idx' stops below the landed stop.
     const Symbol* getSymbolAt(uint idx) const;
 };
 

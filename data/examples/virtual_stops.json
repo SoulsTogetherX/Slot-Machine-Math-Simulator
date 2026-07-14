@@ -1,0 +1,38 @@
+{
+  "$schema": "../schema.json",
+  "name": "virtual_stops_demo",
+  "payout_rows": 1,
+  "seed": 4242,
+  "bet": 1,
+  "symbols": [
+    { "id": "A", "type": "normal" },
+    { "id": "B", "type": "normal" },
+    { "id": "C", "type": "normal" }
+  ],
+  "reels": [
+    [
+      { "id": "A", "weight": 8 },
+      { "id": "B", "weight": 1 },
+      { "id": "C", "weight": 1 }
+    ],
+    [
+      { "id": "A", "weight": 8 },
+      { "id": "B", "weight": 1 },
+      { "id": "C", "weight": 1 }
+    ],
+    [
+      { "id": "A", "weight": 8 },
+      { "id": "B", "weight": 1 },
+      { "id": "C", "weight": 1 }
+    ]
+  ],
+  "patterns": [{ "id": "row1", "match_type": "line", "row": 1 }],
+  "paytables": [
+    {
+      "id": "pt",
+      "pattern_id": "row1",
+      "symbol_requirement": "matching",
+      "payoutWin": 2
+    }
+  ]
+}

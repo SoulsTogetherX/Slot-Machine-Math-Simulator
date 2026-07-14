@@ -5,32 +5,22 @@
 string Pattern::getId() const {
     return id;
 }
-const StatsHandler& Pattern::getStats() const {
-    return stats;
-}
-#pragma endregion
-
-#pragma region Pattern Convolution
-std::vector<SymbolLine> Pattern::convolution(
-    const SymbolGrid &results
-) {
-    auto ret = handleConvolution(results);
-    stats.addSymbolMass(ret);
-    stats.increaseCount(ret.size());
-    return ret;
-}
 #pragma endregion
 
 #pragma region Line Pattern
-std::vector<SymbolLine> LinePattern::handleConvolution(
+std::vector<SymbolLine> LinePattern::convolution(
     const SymbolGrid &results
 ) const {
     auto ret = std::vector<SymbolLine>();
-    ret.resize(1);
-    ret[0].reserve(results.size());
+    ret.reserve(rows.size());
 
-    for(uint i = 0; i < results.size(); i++) {
-        ret[0].push_back(results[i][row - 1]);
+    for(uint row : rows) {
+        SymbolLine line;
+        line.reserve(results.size());
+        for(uint i = 0; i < results.size(); i++) {
+            line.push_back(results[i][row - 1]);
+        }
+        ret.push_back(std::move(line));
     }
 
     return ret;
