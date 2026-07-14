@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "utilts/defs.hpp"
+#include "utilts/symbol_types.hpp"
 #include "utilts/payout_result.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "pattern/pattern_handler.hpp"
@@ -35,16 +36,17 @@ public:
     PayTable& getPayTable(const string& id) const;
     // Returns non-owning views of every stored PayTable.
     std::vector<const PayTable*> getAllPayTables() const;
+    // Returns the unique set of pattern ids referenced by the stored PayTables.
+    std::vector<string> getReferencedPatternIds() const;
 
     // Aggergate the accumulated stats from all patterns
     StatsHandler aggergateStats() const;
     // Gets stats directly from a Paytable with given id
     StatsHandler getDirectStats(const string& id) const;
 
-    // Returns a vector of all PayoutResult from all stored PayTables
-    std::vector<PayoutResult> evaluateAll(
-        const SymbolGrid &results, const PatternHandler& pattern_handler
-    );
+    // Evaluates every PayTable against its pattern's pre-computed convolutions,
+    // returning a PayoutResult for each convolution scored.
+    std::vector<PayoutResult> evaluateAll(const ConvolutionCache& cache);
 
     void clear();
 };

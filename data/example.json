@@ -64,7 +64,8 @@
       "id": "paytable_1",
       "pattern_id": "row",
       "symbol_requirement": "matching",
-      "payoutWin": 1
+      "payoutWin": 1,
+      "payoutFail": 0
     }
   ]
 }

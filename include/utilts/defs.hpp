@@ -6,7 +6,9 @@
 
 #include "utilts/json.hpp"
 
-// Simplified types
+
+//    ========== Shared types for better readability. ==========
+//      Simplified types
 using string = std::string;
 using json = nlohmann::json;
 using uint = unsigned int;

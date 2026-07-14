@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "paytable/paytable_handler.hpp"
 #include "utilts/defs.hpp"
 #include "utilts/extracts.hpp"
@@ -58,6 +60,18 @@ std::vector<const PayTable*> PayTableHandler::getAllPayTables() const {
     }
     return ret;
 }
+std::vector<string> PayTableHandler::getReferencedPatternIds() const {
+    std::unordered_set<string> seen;
+    std::vector<string> ret;
+    ret.reserve(paytables.size());
+
+    for(const auto& [key, value] : paytables) {
+        if (seen.insert(value->getPatternId()).second) {
+            ret.push_back(value->getPatternId());
+        }
+    }
+    return ret;
+}
 #pragma endregion
 
 #pragma region Stats
@@ -74,20 +88,15 @@ StatsHandler PayTableHandler::getDirectStats(const string& id) const {
 #pragma endregion
 
 #pragma region Run Methods
-std::vector<PayoutResult> PayTableHandler::evaluateAll(
-    const SymbolGrid &results,
-    const PatternHandler& pattern_handler
-) {
+std::vector<PayoutResult> PayTableHandler::evaluateAll(const ConvolutionCache& cache) {
     auto ret = std::vector<PayoutResult>();
     ret.reserve(paytables.size());
 
-    for(const auto& paytable : paytables) {
-        auto convolutions = pattern_handler.getPattern(
-            paytable.second->getPatternId()
-        ).convolution(results);
+    for(const auto& [key, paytable] : paytables) {
+        const std::vector<SymbolLine>& convolutions = cache.at(paytable->getPatternId());
 
         for(const SymbolLine& convolution : convolutions) {
-            ret.push_back(paytable.second->evaluate(convolution));
+            ret.push_back(paytable->evaluate(convolution));
         }
     }
 

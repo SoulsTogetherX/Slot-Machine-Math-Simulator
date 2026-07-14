@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "utilts/defs.hpp"
+#include "utilts/symbol_types.hpp"
 #include "symbol/symbol_handler.hpp"
 
 

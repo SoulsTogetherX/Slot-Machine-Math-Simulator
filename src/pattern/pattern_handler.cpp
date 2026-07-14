@@ -36,6 +36,20 @@ void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_h
 }
 #pragma endregion
 
+#pragma region Run Methods
+ConvolutionCache PatternHandler::convolveAll(
+    const SymbolGrid& screen, const std::vector<string>& pattern_ids
+) {
+    ConvolutionCache cache;
+    cache.reserve(pattern_ids.size());
+
+    for (const string& id : pattern_ids) {
+        cache[id] = patterns.at(id)->convolution(screen);
+    }
+    return cache;
+}
+#pragma endregion
+
 #pragma region Accessor Methods
 bool PatternHandler::hasPattern(const string& id) const {
     return patterns.find(id) != patterns.end();

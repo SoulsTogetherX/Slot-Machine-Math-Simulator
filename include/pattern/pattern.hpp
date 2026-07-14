@@ -2,8 +2,10 @@
 #define PATTERN_HPP
 
 #include <string>
+#include <unordered_map>
 
 #include "utilts/defs.hpp"
+#include "utilts/symbol_types.hpp"
 #include "stats/stats_handler.hpp"
 #include "symbol/symbol.hpp"
 

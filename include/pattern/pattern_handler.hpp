@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "utilts/defs.hpp"
+#include "utilts/symbol_types.hpp"
 #include "pattern/pattern.hpp"
 #include "virtual_reels/reel_handler.hpp"
 
@@ -24,6 +25,12 @@ public:
     // Extracts Patterns from json.
     void loadJson(const json& info, const ReelHandler& reel_handler);
 
+    // Convolves each of the given patterns over the screen exactly once, recording
+    // each pattern's stats once, and returns the results keyed by pattern id.
+    ConvolutionCache convolveAll(
+        const SymbolGrid& screen, const std::vector<string>& pattern_ids
+    );
+
     // Accessor Methods
     bool hasPattern(const string& id) const;
     Pattern& getPattern(const string& id) const;
@@ -34,7 +41,6 @@ public:
     StatsHandler aggergateStats() const;
     // Gets stats directly from a Pattern with given id
     StatsHandler getDirectStats(const string& id) const;
-
 
     // Clears Patterns
     void clear();

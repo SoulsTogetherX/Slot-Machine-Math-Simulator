@@ -2,6 +2,7 @@
 #define PAY_TABLE_HPP
 
 #include "utilts/defs.hpp"
+#include "utilts/symbol_types.hpp"
 #include "utilts/payout_result.hpp"
 #include "stats/stats_handler.hpp"
 #include "symbol/symbol.hpp"

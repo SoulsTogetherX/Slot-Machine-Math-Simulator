@@ -8,6 +8,9 @@
     "payout_rows": {
       "type": "integer"
     },
+    "bet": {
+      "type": "integer"
+    },
     "seed": {
       "anyOf": [{ "type": "string" }, { "type": "integer" }]
     },
