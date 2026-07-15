@@ -24,7 +24,7 @@ void ReelHandler::extractPayoutRows(const nlohmann::json& info) {
 }
 
 void ReelHandler::extractSeed(const nlohmann::json& info) {
-    if (!info.contains("seed") || info.at("seed").is_null()) {
+    if (!hasKey("seed", info)) {
         seedFromHardware();
         return;
     }

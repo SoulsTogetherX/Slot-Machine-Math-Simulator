@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <unordered_map>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "symbol/symbol.hpp"
 

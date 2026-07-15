@@ -12,7 +12,7 @@
 // bundled example), then runs a fixed batch of test spins and prints the results.
 int main(int argc, char** argv) {
     // Gets pathname
-    std::string pathname = "data/examples/example.nlohmann::json";
+    std::string pathname = "data/examples/example.json";
     if (argc > 1) {
         pathname = argv[1];
     }
@@ -27,8 +27,6 @@ int main(int argc, char** argv) {
 
     // Creates and runs the Slotmachine Tester
     auto tester = SlotMachineTester(data);
-    tester.runTestRun(1000);
-    tester.printResults();
 
     return 0;
 }

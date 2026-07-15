@@ -1,6 +1,8 @@
 #ifndef PAY_TABLE_HPP
 #define PAY_TABLE_HPP
 
+#include <vector>
+
 #include "utils/types.hpp"
 #include "utils/symbol_types.hpp"
 #include "stats/stats_handler.hpp"
@@ -12,6 +14,18 @@
 struct PayoutResult {
     double payout;
     bool won;
+};
+
+// One entry of a PayTableMatching's optional per-symbol payout rules.
+// A convolution's base symbol picks the first Variant whose 'symbols' list
+// contains it (an empty 'symbols' list means "matches any symbol" -- useful
+// as a catch-all/default variant). That Variant's own 'withWilds' and
+// payouts are then used instead of the PayTableMatching's flat ones.
+struct PayoutVariant {
+    std::vector<std::string> symbols; // Eligible base symbol ids. Empty = any symbol.
+    bool withWilds = true;            // Whether WILD may substitute when checking this variant's match.
+    int payoutWin = 0;
+    int payoutFail = 0;
 };
 
 
@@ -46,8 +60,17 @@ public:
 // paying a flat 'payoutWin' (or 'payoutFail' otherwise).
 class PayTableMatching : public PayTable {
 private:
-    int payoutWin;   // The payout gained from succeeding
-    int payoutFail;  // The payout gained from failing
+    int payoutWin;    // Used only when 'variants' is empty (flat/legacy behavior).
+    int payoutFail;   // Payout when not won; also the fallback when no variant's
+                      // symbol filter matches the line's base symbol at all.
+    std::vector<PayoutVariant> variants;
+
+    // Finds the line's first non-wild symbol ("base"), or nullptr if every
+    // position on the line is WILD.
+    const Symbol* findBaseSymbol(const SymbolLine& line) const;
+    // Checks whether every position on the line matches 'base'. When
+    // 'withWilds' is true, WILD symbols substitute freely.
+    bool lineMatchesSymbol(const SymbolLine& line, const Symbol& base, bool withWilds) const;
 
     bool isMatch(const SymbolLine& line) const override;
     int scoreLine(const SymbolLine& line, bool& won) const override;
@@ -56,6 +79,9 @@ public:
     PayTableMatching(
         std::string id, std::string pattern_id, int payoutWin, int payoutFail
     ) : PayTable(id, pattern_id), payoutWin(payoutWin), payoutFail(payoutFail) {};
+    PayTableMatching(
+        std::string id, std::string pattern_id, std::vector<PayoutVariant> variants, int payoutFail
+    ) : PayTable(id, pattern_id), payoutWin(0), payoutFail(payoutFail), variants(std::move(variants)) {};
 };
 
 #endif  // PAY_TABLE_HPP

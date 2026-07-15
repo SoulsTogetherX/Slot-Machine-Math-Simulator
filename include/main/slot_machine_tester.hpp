@@ -2,8 +2,8 @@
 #define SLOT_MACHINE_TESTER_HPP
 
 #include <vector>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "main/slot_machine.hpp"
 
@@ -31,7 +31,7 @@ public:
 
     // Runs 'rounds' spins, or several batches in sequence, accumulating into session.
     void runTestRun(uint rounds);
-    void runTestRun(std::vector<uint> rounds);
+    void runTestRun(const std::vector<uint>& roundsMass);
 
     // Prints the accumulated financial and symbol/paytable statistics to stdout.
     void printResults() const;

@@ -1,10 +1,11 @@
 #ifndef PAY_TABLE_HANDLER_HPP
 #define PAY_TABLE_HANDLER_HPP
 
+#include <vector>
 #include <unordered_map>
 #include <memory>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "utils/symbol_types.hpp"
 #include "symbol/symbol_handler.hpp"
@@ -25,6 +26,8 @@ private:
     void extractPayTables(
         const nlohmann::json& info, const PatternHandler& pattern_handler
     );
+    // Extracts an optional per-paytable list of PayoutVariant rules.
+    std::vector<PayoutVariant> extractVariants(const nlohmann::json& it);
 public:
     // Extracts PayTables from nlohmann::json.
     void loadJson(

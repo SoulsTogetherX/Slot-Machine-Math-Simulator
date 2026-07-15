@@ -2,124 +2,168 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "payout_rows": {
-      "type": "integer"
-    },
-    "bet": { "type": "integer" },
-    "seed": {
-      "anyOf": [{ "type": "string" }, { "type": "integer" }]
-    },
-    "symbols": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["normal", "wild", "scatter", "bonus"]
-          },
-          "multiplier": {
-            "type": "integer"
-          }
-        },
-        "required": ["id", "type"]
-      }
-    },
-    "reels": {
-      "type": "array",
-      "items": {
-        "type": "array",
-        "items": {
+    "test_info": {
+      "type": "object",
+      "properties": {
+        "test_spins": {
           "anyOf": [
+            { "type": "integer" },
             {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "repeat": {
-                  "type": "integer"
-                },
-                "weight": {
-                  "type": "integer"
-                }
-              },
-              "required": ["id"]
-            },
-            {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
             }
           ]
-        }
+        },
+        "bet": { "type": "integer" }
       }
     },
-    "patterns": {
-      "type": "array",
-      "items": {
-        "anyOf": [
-          {
+    "slots_info": {
+      "type": "object",
+      "properties": {
+        "payout_rows": {
+          "type": "integer"
+        },
+        "seed": {
+          "anyOf": [{ "type": "string" }, { "type": "integer" }]
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
               "id": {
                 "type": "string"
               },
-              "match_type": {
+              "type": {
                 "type": "string",
-                "const": "line"
+                "enum": ["normal", "wild", "scatter", "bonus"]
               },
-              "row": {
-                "anyOf": [
-                  { "type": "integer" },
-                  { "type": "array", "items": { "type": "integer" } }
-                ]
+              "multiplier": {
+                "type": "integer"
+              }
+            },
+            "required": ["id", "type"]
+          }
+        },
+        "reels": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "repeat": {
+                      "type": "integer"
+                    },
+                    "weight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": ["id"]
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "patterns": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "match_type": {
+                    "type": "string",
+                    "const": "line"
+                  },
+                  "row": {
+                    "anyOf": [
+                      { "type": "integer" },
+                      { "type": "array", "items": { "type": "integer" } }
+                    ]
+                  },
+                  "filter": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": ["id", "match_type", "row"]
+              }
+            ]
+          }
+        },
+        "paytables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
               },
-              "filter": {
+              "pattern_id": {
+                "type": "string"
+              },
+              "symbol_requirement": {
+                "type": "string",
+                "enum": ["matching"]
+              },
+              "payoutWin": {
+                "type": "number"
+              },
+              "payoutFail": {
+                "type": "number"
+              },
+              "variants": {
                 "type": "array",
                 "items": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "symbols": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "withWilds": {
+                      "type": "boolean"
+                    },
+                    "payoutWin": {
+                      "type": "number"
+                    },
+                    "payoutFail": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["payoutWin"]
                 }
               }
             },
-            "required": ["id", "match_type", "row"]
+            "required": ["id", "pattern_id", "symbol_requirement"]
           }
-        ]
-      }
-    },
-    "paytables": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "pattern_id": {
-            "type": "string"
-          },
-          "symbol_requirement": {
-            "type": "string",
-            "enum": ["matching"]
-          },
-          "payoutWin": {
-            "type": "number"
-          },
-          "payoutFail": {
-            "type": "number"
-          }
-        },
-        "required": ["id", "pattern_id", "symbol_requirement", "payoutWin"]
-      }
+        }
+      },
+      "required": [
+        "payout_rows",
+        "seed",
+        "symbols",
+        "reels",
+        "patterns",
+        "paytables"
+      ]
     }
   },
-  "required": [
-    "payout_rows",
-    "seed",
-    "symbols",
-    "reels",
-    "patterns",
-    "paytables"
-  ]
+  "required": ["slots_info"]
 }

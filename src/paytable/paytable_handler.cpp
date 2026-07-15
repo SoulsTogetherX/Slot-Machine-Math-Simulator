@@ -35,15 +35,64 @@ void PayTableHandler::extractPayTables(
         std::string symbol_requirement = extractStr("symbol_requirement", it);
 
         if (symbol_requirement == "matching") {
-            int payout = extractInt("payoutWin", it);
-            paytables[id] = std::make_unique<PayTableMatching>(
-                id, pattern_id, payout, payoutFail
-            );
+            if (hasKey("variants", it) && hasKey("payoutWin", it)) {
+                throw std::invalid_argument(
+                    "PayTable '" + id + "' cannot specify both 'variants' and a flat 'payoutWin'; use one or the other."
+                );
+            }
+
+            if (hasKey("variants", it)) {
+                std::vector<PayoutVariant> variants = extractVariants(it);
+                paytables[id] = std::make_unique<PayTableMatching>(
+                    id, pattern_id, std::move(variants), payoutFail
+                );
+            } else {
+                int payout = extractInt("payoutWin", it);
+                paytables[id] = std::make_unique<PayTableMatching>(
+                    id, pattern_id, payout, payoutFail
+                );
+            }
             continue;
         } else {
             throw std::invalid_argument("Paytable's 'symbol_requirement' is an invaild value.");
         }
     }
+}
+
+std::vector<PayoutVariant> PayTableHandler::extractVariants(const nlohmann::json& it) {
+    const nlohmann::json& arr = it.at("variants");
+    if (!arr.is_array()) {
+        throw std::invalid_argument("'variants' is expected to be an array, but found: " + to_string(arr));
+    }
+
+    std::vector<PayoutVariant> variants;
+    variants.reserve(arr.size());
+
+    for (const auto& v : arr) {
+        PayoutVariant variant;
+
+        if (hasKey("symbols", v)) {
+            const nlohmann::json& syms = v.at("symbols");
+            if (!syms.is_array()) {
+                throw std::invalid_argument("Variant's 'symbols' is expected to be an array, but found: " + to_string(syms));
+            }
+            for (const auto& s : syms) {
+                if (!s.is_string()) {
+                    throw std::invalid_argument("Variant's 'symbols' array must contain strings.");
+                }
+                variant.symbols.push_back(s.get<std::string>());
+            }
+        }
+
+        // An empty/omitted 'symbols' list is a valid catch-all.
+        variant.withWilds = extractBool("withWilds", v, true);
+        variant.payoutWin = extractInt("payoutWin", v);
+        variant.payoutFail = extractInt("payoutFail", v, 0);
+
+        variants.push_back(std::move(variant));
+    }
+
+    return variants;
 }
 #pragma endregion
 
@@ -63,8 +112,7 @@ std::vector<const PayTable*> PayTableHandler::getAllPayTables() const {
     }
     return ret;
 }
-// Dedupes so a pattern shared by multiple paytables is only convolved once per spin
-// (see DESIGN.md item 1: this is what avoids double-counting a pattern's stats).
+// Dedupes so a pattern shared by multiple paytables is only convolved once per spin.
 std::vector<std::string> PayTableHandler::getReferencedPatternIds() const {
     std::unordered_set<std::string> seen;
     std::vector<std::string> ret;

@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <random>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "utils/symbol_types.hpp"
 #include "stats/stats_handler.hpp"

@@ -2,8 +2,8 @@
 #define SLOT_MACHINE_HPP
 
 #include <vector>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "virtual_reels/reel_handler.hpp"

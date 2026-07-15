@@ -24,8 +24,36 @@ SlotMachineTester::SlotMachineTester(const nlohmann::json& info) {
 #pragma region Load Info
 // Reads the flat "bet" field (defaults to 1) and delegates the rest of the config to SlotMachine.
 void SlotMachineTester::loadJson(const nlohmann::json& info) {
-    bet_wager = extractInt("bet", info, 1);
-    slot_machine.loadJson(info);
+    slot_machine.loadJson(info.at("slots_info"));
+    
+    if (hasKey("test_info", info)) {
+        auto test_info = info.at("test_info");
+        // Get bet amount
+        bet_wager = extractInt("bet", test_info, 1);
+
+        // Returns if no test spins requested
+        if (!hasKey("test_spins", test_info)) {
+            return;
+        }
+
+        // Spins requested test spins
+        auto test_spins = test_info.at("test_spins");
+        if (test_spins.is_number_integer()) {
+            runTestRun(test_spins.get<uint>());
+        } else if (test_spins.is_array()) {
+            auto rounds = std::vector<uint>();
+            for(const auto& it : test_spins) {
+                rounds.push_back(it);
+            }
+            runTestRun(rounds);
+        } else {
+            throw std::invalid_argument("Expected to find number or array, but found: " + to_string(info));
+        }
+    } else {
+        // Default bet amount
+        bet_wager = 1;
+    }
+
 }
 #pragma endregion endregion
 
@@ -38,9 +66,17 @@ void SlotMachineTester::runTestRun(uint rounds) {
     }
 }
 // Convenience overload for running several batches back-to-back (e.g. staged testing).
-void SlotMachineTester::runTestRun(std::vector<uint> rounds) {
-    for(uint round : rounds) {
-        runTestRun(round);
+void SlotMachineTester::runTestRun(const std::vector<uint>& roundsMass) {
+    uint i = 0;
+    for(uint rounds : roundsMass) {
+        for(; i < rounds; i++) {
+            auto betResult = slot_machine.spinBet();
+            session.record(bet_wager, betResult.winPayout, betResult.losePayout);
+        }
+
+        std::cout << "  ===  " << "Rounds: " << rounds << "  ===  \n";
+        printResults();
+        std::cout << "\n\n\n";
     }
 }
 #pragma endregion endregion
@@ -58,6 +94,8 @@ void SlotMachineTester::printResults() const {
     std::cout << std::fixed << std::setprecision(2);
 
     std::cout << "Spins:      " << spins << "\n";
+    std::cout << "Wins:       " << session.getWinSpins() << "\n";
+    std::cout << "Losses:     " << spins - session.getWinSpins() << "\n";
     std::cout << "Wager/spin: " << bet_wager << "\n\n";
 
     std::cout << "-- Financials --\n";
@@ -78,7 +116,7 @@ void SlotMachineTester::printResults() const {
               << (100.0 * session.rtpMargin()) << "%\n\n";
 
     std::cout << "Screen symbol distribution:\n";
-    std::cout << reel_stats.serializeSymbols() << "\n";
+    std::cout << reel_stats.serializeSymbols() << "\n\n";
 
     std::cout << "\tPaytable hits:\n";
     for (const PayTable* paytable : paytable_handler.getAllPayTables()) {

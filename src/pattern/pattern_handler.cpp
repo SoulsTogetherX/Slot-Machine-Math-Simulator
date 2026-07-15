@@ -32,8 +32,8 @@ void PatternHandler::extractPatterns(const nlohmann::json& info, const ReelHandl
     }
 }
 
-static std::vector<uint> extractRows(const nlohmann::json& it, uint payout_rows) {
-    if (!it.contains("row") || it.at("row").is_null()) {
+std::vector<uint> PatternHandler::extractRows(const nlohmann::json& it, uint payout_rows) {
+    if (!hasKey("row", it)) {
         throw std::out_of_range("Line pattern requires a 'row'.");
     }
 

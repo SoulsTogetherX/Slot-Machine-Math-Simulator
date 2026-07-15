@@ -3,8 +3,8 @@
 
 #include <unordered_map>
 #include <memory>
-
 #include <nlohmann/json.hpp>
+
 #include "utils/types.hpp"
 #include "utils/symbol_types.hpp"
 #include "pattern/pattern.hpp"
@@ -22,6 +22,7 @@ private:
 
     // Extracts Patterns from nlohmann::json.
     void extractPatterns(const nlohmann::json& info, const ReelHandler& reel_handler);
+    std::vector<uint> extractRows(const nlohmann::json& it, uint payout_rows);
 public:
     // Extracts Patterns from nlohmann::json.
     void loadJson(const nlohmann::json& info, const ReelHandler& reel_handler);

@@ -1,70 +1,76 @@
 {
   "$schema": "../schema.json",
-  "payout_rows": 1,
-  "seed": "auto",
-  "symbols": [
-    {
-      "id": "CHERRY",
-      "type": "normal"
-    },
-    {
-      "id": "BAR",
-      "type": "normal"
-    },
-    {
-      "id": "SEVEN",
-      "type": "normal"
-    }
-  ],
-  "reels": [
-    [
+  "test_info": {
+    "bet": 1,
+    "test_spins": [100000]
+  },
+  "slots_info": {
+    "payout_rows": 1,
+    "seed": "auto",
+    "symbols": [
       {
         "id": "CHERRY",
-        "repeat": 2
+        "type": "normal"
       },
-      "SEVEN",
       {
         "id": "BAR",
-        "repeat": 1
+        "type": "normal"
+      },
+      {
+        "id": "SEVEN",
+        "type": "normal"
       }
     ],
-    [
+    "reels": [
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ],
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ],
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ]
+    ],
+    "patterns": [
       {
-        "id": "CHERRY",
-        "repeat": 2
-      },
-      "SEVEN",
-      {
-        "id": "BAR",
-        "repeat": 1
+        "id": "row",
+        "match_type": "line",
+        "row": 1
       }
     ],
-    [
+    "paytables": [
       {
-        "id": "CHERRY",
-        "repeat": 2
-      },
-      "SEVEN",
-      {
-        "id": "BAR",
-        "repeat": 1
+        "id": "paytable_1",
+        "pattern_id": "row",
+        "symbol_requirement": "matching",
+        "payoutWin": 1,
+        "payoutFail": 0
       }
     ]
-  ],
-  "patterns": [
-    {
-      "id": "row",
-      "match_type": "line",
-      "row": 1
-    }
-  ],
-  "paytables": [
-    {
-      "id": "paytable_1",
-      "pattern_id": "row",
-      "symbol_requirement": "matching",
-      "payoutWin": 1,
-      "payoutFail": 0
-    }
-  ]
+  }
 }

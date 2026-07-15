@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "paytable/paytable.hpp"
 #include "utils/types.hpp"
 
@@ -43,6 +45,37 @@ PayoutResult PayTable::evaluate(const SymbolLine& line) {
 #pragma endregion
 
 #pragma region PayTable Matching
+// Finds the first non-wild symbol on the line ("base"). Returns nullptr if
+// every position is WILD -- callers decide how to treat that case, since it
+// means differently in the flat vs. variant-based paths below.
+const Symbol* PayTableMatching::findBaseSymbol(const SymbolLine& line) const {
+    for (const Symbol* s : line) {
+        if (s->getType() != WILD) {
+            return s;
+        }
+    }
+    return nullptr;
+}
+
+// Checks whether every position on the line matches 'base'. 'withWilds'
+// controls whether a WILD symbol may substitute (Symbol::matches lets WILD
+// match anything) or must literally equal 'base' by id (a WILD can then only
+// satisfy this if 'base' itself is WILD).
+bool PayTableMatching::lineMatchesSymbol(const SymbolLine& line, const Symbol& base, bool withWilds) const {
+    for (const Symbol* s : line) {
+        if (withWilds) {
+            if (!s->matches(base)) {
+                return false;
+            }
+        } else {
+            if (s->getId() != base.getId()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 // A line matches if, ignoring wilds, every symbol is identical. The first non-wild
 // symbol found sets the 'base' to match against; an all-wild line always matches.
 bool PayTableMatching::isMatch(const SymbolLine& line) const {
@@ -50,27 +83,45 @@ bool PayTableMatching::isMatch(const SymbolLine& line) const {
         return false;
     }
 
-    uint idx = 0;
-    const Symbol* base = nullptr;
-
-    for(; idx < line.size(); idx++) {
-        if (line[idx]->getType() != WILD) {
-            base = line[idx];
-            break;
-        }
-    }
+    const Symbol* base = findBaseSymbol(line);
     if (base == nullptr) {
         return true;
     }
-
-    for(; idx < line.size(); idx++) {
-        if (!line[idx]->matches(*base)) {
-            return false;
-        }
-    }
-    return true;
+    return lineMatchesSymbol(line, *base, true);
 }
+
 int PayTableMatching::scoreLine(const SymbolLine& line, bool& won) const {
+    if (!variants.empty()) {
+        const Symbol* base = findBaseSymbol(line);
+
+        for (const PayoutVariant& variant : variants) {
+            // An all-wild line has no base symbol to filter on -- only a
+            // variant that explicitly lists "WILD" can claim it.
+            bool symbolEligible;
+            if (base == nullptr) {
+                symbolEligible = std::find(variant.symbols.begin(), variant.symbols.end(), "WILD")
+                    != variant.symbols.end();
+            } else {
+                // An empty 'symbols' list is a catch-all: matches any base symbol.
+                symbolEligible = variant.symbols.empty()
+                    || std::find(variant.symbols.begin(), variant.symbols.end(), base->getId())
+                        != variant.symbols.end();
+            }
+            if (!symbolEligible) {
+                continue; // try the next variant
+            }
+
+            bool lineMatches = (base == nullptr) ? true : lineMatchesSymbol(line, *base, variant.withWilds);
+            won = lineMatches;
+            return lineMatches ? variant.payoutWin : variant.payoutFail;
+        }
+
+        // No variant's symbol filter covers this line's base symbol at all.
+        won = false;
+        return payoutFail;
+    }
+
+    // Flat/legacy behavior: unchanged from before variants existed.
     if (isMatch(line)) {
         won = true;
         return payoutWin;

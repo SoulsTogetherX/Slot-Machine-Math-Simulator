@@ -2,16 +2,20 @@
 #define EXTRACTS_HPP
 
 #include <optional>
-
 #include <nlohmann/json.hpp>
 
 #include "utils/types.hpp"
 
 
 
+// A helper methods that returns if a key is in a nlohmann::json
+inline bool hasKey(const std::string& key, const nlohmann::json& j) {
+    return (j.contains(key) && !j.at(key).is_null());
+}
+
 // A helper method to extract strings from nlohmann::json easier
 inline std::string extractStr(const std::string& key, const nlohmann::json& j, std::optional<std::string> base = {}) {
-    if (!j.contains(key) || j.at(key).is_null()) {
+    if (!hasKey(key, j)) {
         if (base) {
             return *base;
         }
@@ -26,7 +30,7 @@ inline std::string extractStr(const std::string& key, const nlohmann::json& j, s
 }
 // A helper method to extract ints from nlohmann::json easier
 inline int extractInt(const std::string& key, const nlohmann::json& j, std::optional<int> base = {}) {
-    if (!j.contains(key) || j.at(key).is_null()) {
+    if (!hasKey(key, j)) {
         if (base) {
             return *base;
         }
@@ -44,7 +48,7 @@ inline int extractInt(const std::string& key, const nlohmann::json& j, std::opti
 }
 // A helper method to extract booleans from nlohmann::json easier
 inline bool extractBool(const std::string& key, const nlohmann::json& j, std::optional<bool> base = {}) {
-    if (!j.contains(key) || j.at(key).is_null()) {
+    if (!hasKey(key, j)) {
         if (base) {
             return *base;
         }
@@ -62,7 +66,7 @@ inline bool extractBool(const std::string& key, const nlohmann::json& j, std::op
 }
 // A helper method to extract doubles from nlohmann::json easier
 inline double extractDouble(const std::string& key, const nlohmann::json& j, std::optional<double> base = {}) {
-    if (!j.contains(key) || j.at(key).is_null()) {
+    if (!hasKey(key, j)) {
         if (base) {
             return *base;
         }
