@@ -36,12 +36,12 @@ void StatsHandler::addSymbolMass(const SymbolGrid& syms) {
 uint StatsHandler::getCount() const {
     return count;
 }
-std::unordered_map<string, uint> StatsHandler::getSymbolCounts() const {
+std::unordered_map<std::string, uint> StatsHandler::getSymbolCounts() const {
     return symbol_count;
 }
 
-string StatsHandler::serializeSymbols() const {
-    string ret = "";
+std::string StatsHandler::serializeSymbols() const {
+    std::string ret = "";
     for (const auto& [key, value] : symbol_count) {
         ret += key + ": " + std::to_string(value) + "\n";
     }

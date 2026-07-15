@@ -3,12 +3,14 @@
 
 #include <optional>
 
-#include "utilts/defs.hpp"
+#include <nlohmann/json.hpp>
+
+#include "utils/types.hpp"
 
 
 
-// A helper method to extract strings from json easier
-inline string extractStr(const string& key, const json& j, std::optional<string> base = {}) {
+// A helper method to extract strings from nlohmann::json easier
+inline std::string extractStr(const std::string& key, const nlohmann::json& j, std::optional<std::string> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
@@ -22,8 +24,8 @@ inline string extractStr(const string& key, const json& j, std::optional<string>
     }
     return info.get<std::string>();
 }
-// A helper method to extract ints from json easier
-inline int extractInt(const string& key, const json& j, std::optional<int> base = {}) {
+// A helper method to extract ints from nlohmann::json easier
+inline int extractInt(const std::string& key, const nlohmann::json& j, std::optional<int> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
@@ -40,8 +42,8 @@ inline int extractInt(const string& key, const json& j, std::optional<int> base 
     }
     return info.get<int>();
 }
-// A helper method to extract booleans from json easier
-inline bool extractBool(const string& key, const json& j, std::optional<bool> base = {}) {
+// A helper method to extract booleans from nlohmann::json easier
+inline bool extractBool(const std::string& key, const nlohmann::json& j, std::optional<bool> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;
@@ -58,8 +60,8 @@ inline bool extractBool(const string& key, const json& j, std::optional<bool> ba
     }
     return info.get<bool>();
 }
-// A helper method to extract doubles from json easier
-inline double extractDouble(const string& key, const json& j, std::optional<double> base = {}) {
+// A helper method to extract doubles from nlohmann::json easier
+inline double extractDouble(const std::string& key, const nlohmann::json& j, std::optional<double> base = {}) {
     if (!j.contains(key) || j.at(key).is_null()) {
         if (base) {
             return *base;

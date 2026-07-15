@@ -4,7 +4,7 @@
 #include <vector>
 #include <random>
 
-#include "utilts/defs.hpp"
+#include "utils/types.hpp"
 #include "symbol/symbol.hpp"
 
 

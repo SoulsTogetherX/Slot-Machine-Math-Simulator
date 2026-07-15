@@ -1,6 +1,5 @@
 {
   "$schema": "../schema.json",
-  "name": "virtual_stops_demo",
   "payout_rows": 1,
   "seed": 4242,
   "bet": 1,

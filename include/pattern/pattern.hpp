@@ -4,8 +4,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "utilts/defs.hpp"
-#include "utilts/symbol_types.hpp"
+#include "utils/types.hpp"
+#include "utils/symbol_types.hpp"
 #include "stats/stats_handler.hpp"
 #include "symbol/symbol.hpp"
 
@@ -15,13 +15,13 @@
 // Overwrite 'handleConvolution' to handle different convolution types.
 class Pattern {
 private:
-    string id; // The Pattern's name
+    std::string id; // The Pattern's name
 public:
     Pattern() {};
-    Pattern(string id) : id(id) {};
+    Pattern(std::string id) : id(id) {};
 
     // Accessor Methods
-    string getId() const;
+    std::string getId() const;
 
     // Returns one or more convolutions over the slot screen.
     virtual std::vector<SymbolLine> convolution(
@@ -35,7 +35,7 @@ private:
     std::vector<uint> rows; // The rows being convoluted over.
 public:
     LinePattern() {};
-    LinePattern(string id, std::vector<uint> rows) : Pattern(id), rows(std::move(rows)) {};
+    LinePattern(std::string id, std::vector<uint> rows) : Pattern(id), rows(std::move(rows)) {};
 
     std::vector<SymbolLine> convolution(
         const SymbolGrid &results

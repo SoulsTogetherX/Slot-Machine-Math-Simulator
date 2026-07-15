@@ -1,27 +1,29 @@
+#include <nlohmann/json.hpp>
+
 #include "symbol/symbol_handler.hpp"
-#include "utilts/defs.hpp"
-#include "utilts/extracts.hpp"
+#include "utils/types.hpp"
+#include "utils/extracts.hpp"
 
 
 
 #pragma region Extract Info Helpers
-void SymbolHandler::loadJson(const json& info) {
+void SymbolHandler::loadJson(const nlohmann::json& info) {
     extractSymbols(info.at("symbols"));
 }
 
-void SymbolHandler::extractSymbols(const json& info) {
+void SymbolHandler::extractSymbols(const nlohmann::json& info) {
     if (!info.is_array()) {
         throw std::invalid_argument("Symbols is expected to be array, but found: " + to_string(info));
     }
 
     for (const auto& it : info) {
-        string id = extractStr("id", it);
+        std::string id = extractStr("id", it);
         if (symbols.find(id) != symbols.end()) {
             throw std::invalid_argument("Symbol'" + id + "' was previously defined.");
         }
         
         SYMBOL_TYPE type;
-        string str_type = extractStr("type", it, "normal");
+        std::string str_type = extractStr("type", it, "normal");
 
         if (str_type == "normal") {
             type = NORMAL;
@@ -42,15 +44,15 @@ void SymbolHandler::extractSymbols(const json& info) {
 #pragma endregion
 
 #pragma region Accessor Methods
-bool SymbolHandler::hasSymbol(const string& id) const {
+bool SymbolHandler::hasSymbol(const std::string& id) const {
     return symbols.find(id) != symbols.end();
 }
-const Symbol& SymbolHandler::getSymbol(const string& id) const {
+const Symbol& SymbolHandler::getSymbol(const std::string& id) const {
     return symbols.at(id);
 }
 
-std::vector<string> SymbolHandler::getSymbolIds() const {
-    std::vector<string> ret;
+std::vector<std::string> SymbolHandler::getSymbolIds() const {
+    std::vector<std::string> ret;
     ret.reserve(symbols.size());
 
     for(const auto& sym : symbols) {

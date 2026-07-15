@@ -5,6 +5,8 @@
 
 
 #pragma region Record
+// Folds one spin's outcome into the running totals, loss-streak, max win, and the
+// Welford accumulators used to derive variance/volatility later.
 void SessionStats::record(double wager, double won, double consolation) {
     const double ret = won + consolation;
 

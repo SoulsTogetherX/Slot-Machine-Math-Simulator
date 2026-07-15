@@ -1,13 +1,13 @@
 #include "paytable/paytable.hpp"
-#include "utilts/defs.hpp"
+#include "utils/types.hpp"
 
 
 
 #pragma region Access Methods
-string PayTable::getId() const {
+std::string PayTable::getId() const {
     return id;
 }
-string PayTable::getPatternId() const {
+std::string PayTable::getPatternId() const {
     return pattern_id;
 }
 
@@ -17,6 +17,9 @@ const StatsHandler& PayTable::getStats() const {
 #pragma endregion
 
 #pragma region Run Methods
+// Scores the line, then on a win multiplies the payout by the product of every
+// symbol's multiplier on that line (wilds and multiplier symbols stack). Stats
+// (hit count, symbol frequency) are only recorded for wins, not consolation payouts.
 PayoutResult PayTable::evaluate(const SymbolLine& line) {
     bool won = false;
     int payout = scoreLine(line, won);
@@ -40,6 +43,8 @@ PayoutResult PayTable::evaluate(const SymbolLine& line) {
 #pragma endregion
 
 #pragma region PayTable Matching
+// A line matches if, ignoring wilds, every symbol is identical. The first non-wild
+// symbol found sets the 'base' to match against; an all-wild line always matches.
 bool PayTableMatching::isMatch(const SymbolLine& line) const {
     if (line.empty()) {
         return false;

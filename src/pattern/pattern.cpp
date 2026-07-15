@@ -2,12 +2,14 @@
 
 
 #pragma region Accessors
-string Pattern::getId() const {
+std::string Pattern::getId() const {
     return id;
 }
 #pragma endregion
 
 #pragma region Line Pattern
+// Builds one SymbolLine per configured row by taking that row's symbol from every
+// reel; 'rows' are stored 1-indexed (as configured), hence the 'row - 1' offset.
 std::vector<SymbolLine> LinePattern::convolution(
     const SymbolGrid &results
 ) const {

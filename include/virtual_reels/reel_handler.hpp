@@ -4,8 +4,9 @@
 #include <vector>
 #include <random>
 
-#include "utilts/defs.hpp"
-#include "utilts/symbol_types.hpp"
+#include <nlohmann/json.hpp>
+#include "utils/types.hpp"
+#include "utils/symbol_types.hpp"
 #include "stats/stats_handler.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "virtual_reels/reel.hpp"
@@ -25,13 +26,13 @@ private:
     std::mt19937 rng;
     void seedFromHardware();
 
-    // Extracts Symbols from json.
-    void extractPayoutRows(const json& info);
-    void extractSeed(const json& info);
-    void extractReels(const json& info, const SymbolHandler& symbol_handler);
+    // Extracts Symbols from nlohmann::json.
+    void extractPayoutRows(const nlohmann::json& info);
+    void extractSeed(const nlohmann::json& info);
+    void extractReels(const nlohmann::json& info, const SymbolHandler& symbol_handler);
 public:
-    // Extracts Symbols from json.
-    void loadJson(const json& info, const SymbolHandler& symbol_handler);
+    // Extracts Symbols from nlohmann::json.
+    void loadJson(const nlohmann::json& info, const SymbolHandler& symbol_handler);
 
     // Returns a slotmachine spin and returns the screen, via an array of symbols
     SymbolGrid runSpin();

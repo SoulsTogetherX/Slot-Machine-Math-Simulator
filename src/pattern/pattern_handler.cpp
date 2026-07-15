@@ -1,16 +1,43 @@
+#include <nlohmann/json.hpp>
+
 #include "pattern/pattern_handler.hpp"
-#include "utilts/defs.hpp"
-#include "utilts/extracts.hpp"
+#include "utils/types.hpp"
+#include "utils/extracts.hpp"
 
 
 
 #pragma region Extract Info Helpers
-static std::vector<uint> extractRows(const json& it, uint payout_rows) {
+void PatternHandler::loadJson(const nlohmann::json& info, const ReelHandler& reel_handler) {
+    extractPatterns(info.at("patterns"), reel_handler);
+}
+void PatternHandler::extractPatterns(const nlohmann::json& info, const ReelHandler& reel_handler) {
+    if (!info.is_array()) {
+        throw std::invalid_argument("Patterns is expected to be array, but found: " + to_string(info));
+    }
+
+    for(const auto& it : info) {
+        std::string id = extractStr("id", it);
+        if (hasPattern(id)) {
+            throw std::invalid_argument("Pattern id '" + id + "' has already been defined.");
+        }
+
+        std::string match_type = extractStr("match_type", it);
+        if (match_type == "line") {
+            std::vector<uint> rows = extractRows(it, reel_handler.getPayoutRows());
+            patterns[id] = std::make_unique<LinePattern>(id, rows);
+            continue;
+        } else {
+            throw std::invalid_argument("Pattern's '" + match_type + "' is an invaild value.");
+        }
+    }
+}
+
+static std::vector<uint> extractRows(const nlohmann::json& it, uint payout_rows) {
     if (!it.contains("row") || it.at("row").is_null()) {
         throw std::out_of_range("Line pattern requires a 'row'.");
     }
 
-    const json& row_info = it.at("row");
+    const nlohmann::json& row_info = it.at("row");
     std::vector<uint> rows;
 
     auto add_row = [&](int r) {
@@ -38,41 +65,16 @@ static std::vector<uint> extractRows(const json& it, uint payout_rows) {
 
     return rows;
 }
-
-void PatternHandler::loadJson(const json& info, const ReelHandler& reel_handler) {
-    extractPatterns(info.at("patterns"), reel_handler);
-}
-void PatternHandler::extractPatterns(const json& info, const ReelHandler& reel_handler) {
-    if (!info.is_array()) {
-        throw std::invalid_argument("Patterns is expected to be array, but found: " + to_string(info));
-    }
-
-    for(const auto& it : info) {
-        string id = extractStr("id", it);
-        if (hasPattern(id)) {
-            throw std::invalid_argument("Pattern id '" + id + "' has already been defined.");
-        }
-
-        string match_type = extractStr("match_type", it);
-        if (match_type == "line") {
-            std::vector<uint> rows = extractRows(it, reel_handler.getPayoutRows());
-            patterns[id] = std::make_unique<LinePattern>(id, rows);
-            continue;
-        } else {
-            throw std::invalid_argument("Pattern's '" + match_type + "' is an invaild value.");
-        }
-    }
-}
 #pragma endregion
 
 #pragma region Run Methods
 ConvolutionCache PatternHandler::convolveAll(
-    const SymbolGrid& screen, const std::vector<string>& pattern_ids
+    const SymbolGrid& screen, const std::vector<std::string>& pattern_ids
 ) {
     ConvolutionCache cache;
     cache.reserve(pattern_ids.size());
 
-    for (const string& id : pattern_ids) {
+    for (const std::string& id : pattern_ids) {
         cache[id] = patterns.at(id)->convolution(screen);
     }
     return cache;
@@ -80,10 +82,10 @@ ConvolutionCache PatternHandler::convolveAll(
 #pragma endregion
 
 #pragma region Accessor Methods
-bool PatternHandler::hasPattern(const string& id) const {
+bool PatternHandler::hasPattern(const std::string& id) const {
     return patterns.find(id) != patterns.end();
 }
-Pattern& PatternHandler::getPattern(const string& id) const {
+Pattern& PatternHandler::getPattern(const std::string& id) const {
     return *patterns.at(id);
 }
 std::vector<const Pattern*> PatternHandler::getAllPatterns() const {

@@ -1,6 +1,5 @@
 {
   "$schema": "../schema.json",
-  "name": "multi_line_demo",
   "payout_rows": 3,
   "seed": 555,
   "bet": 3,

@@ -4,7 +4,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "utilts/defs.hpp"
+#include <nlohmann/json.hpp>
+#include "utils/types.hpp"
 #include "symbol/symbol.hpp"
 
 
@@ -13,18 +14,18 @@
 class SymbolHandler {
 private:
     // A map of all registered Symbols (id, Symbol)
-    std::unordered_map<string, Symbol> symbols;
+    std::unordered_map<std::string, Symbol> symbols;
 
-    // Extracts Symbols from json.
-    void extractSymbols(const json& info);
+    // Extracts Symbols from nlohmann::json.
+    void extractSymbols(const nlohmann::json& info);
 public:
-    // Extracts Symbols from json.
-    void loadJson(const json& info);
+    // Extracts Symbols from nlohmann::json.
+    void loadJson(const nlohmann::json& info);
 
     // Accessor Methods
-    bool hasSymbol(const string& id) const;
-    const Symbol& getSymbol(const string& id) const;
-    std::vector<string> getSymbolIds() const;
+    bool hasSymbol(const std::string& id) const;
+    const Symbol& getSymbol(const std::string& id) const;
+    std::vector<std::string> getSymbolIds() const;
 
     // Clears Symbols
     void clear();

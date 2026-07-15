@@ -2,9 +2,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
-    },
     "payout_rows": {
       "type": "integer"
     },
@@ -118,7 +115,6 @@
     }
   },
   "required": [
-    "name",
     "payout_rows",
     "seed",
     "symbols",

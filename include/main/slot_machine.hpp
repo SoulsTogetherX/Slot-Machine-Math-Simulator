@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include "utilts/defs.hpp"
+#include <nlohmann/json.hpp>
+#include "utils/types.hpp"
 #include "symbol/symbol_handler.hpp"
 #include "virtual_reels/reel_handler.hpp"
 #include "pattern/pattern_handler.hpp"
@@ -12,12 +13,17 @@
 
 
 
+// The outcome of one spin: total credits from winning paytable hits (winPayout)
+// and total credits from non-winning/consolation hits (losePayout).
+struct SpinResult {
+    double winPayout;
+    double losePayout;
+};
+
+
 // The Main Class holding all information of a SlotMachine, and it's components.
 class SlotMachine {
 private:
-    // Identifier
-    string name;
-
     SymbolHandler symbol_handler;
     ReelHandler reel_handler;
     PatternHandler pattern_handler;
@@ -25,37 +31,21 @@ private:
 
     // The unique pattern ids referenced by at least one paytable, cached at load
     // so each spin convolves only the patterns that are actually scored.
-    std::vector<string> referenced_patterns;
-
-    // The base wager: how much is staked on each spin.
-    uint bet_wager;
-
-    // Running bet statistics for the current session of spins.
-    SessionStats session;
+    std::vector<std::string> referenced_patterns;
 public:
     SlotMachine();
-    SlotMachine(string pathname);
-    SlotMachine(const json& info);
+    SlotMachine(const nlohmann::json& info);
 
-    // Loads a SlotMachine's data from a json file.
-    void loadPath(string pathname);
-    // Loads a SlotMachine's data from a json object.
-    void loadJson(const json& info);
-
-    string getName() const;
+    // Loads a SlotMachine's data from a nlohmann::json object.
+    void loadJson(const nlohmann::json& info);
     
     const SymbolHandler& getSymbolHandler() const;
     const ReelHandler& getReelHandler() const;
     const PatternHandler& getPatternHandler() const;
     const PayTableHandler& getPayTableHandler() const;
 
-    const SessionStats& getSessionStats() const;
-
     // Spins the slotmachine once, tracking all stats along the way.
-    void spinBet();
-
-    // Prints the raw statistics
-    void printRaw() const;
+    SpinResult spinBet();
 
     // Clears all Compoenent Classes
     void clear();

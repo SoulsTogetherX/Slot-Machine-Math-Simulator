@@ -4,8 +4,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "utilts/defs.hpp"
-#include "utilts/symbol_types.hpp"
+#include "utils/types.hpp"
+#include "utils/symbol_types.hpp"
 #include "symbol/symbol_handler.hpp"
 
 
@@ -17,7 +17,7 @@ private:
     uint count = 0;
 
     // The count each symbol has been successfully referenced in this object
-    std::unordered_map<string, uint> symbol_count;
+    std::unordered_map<std::string, uint> symbol_count;
 public:
     // Merges another StatsHandler object's data to this one.
     // Does not affect the given object
@@ -26,7 +26,7 @@ public:
     // Registers all registered symbols to '0' count
     void registerSymbols(const SymbolHandler &symbol_handler);
 
-    // Increases the count
+    // Increases the success count
     void increaseCount(uint inc = 0);
 
     // Add to the count of recorded symbols
@@ -34,12 +34,11 @@ public:
     void addSymbols(const SymbolLine& syms);
     void addSymbolMass(const SymbolGrid& syms);
 
-    // Accessor Methods
     uint getCount() const;
-    std::unordered_map<string, uint> getSymbolCounts() const;
+    std::unordered_map<std::string, uint> getSymbolCounts() const;
 
     // Returns a human-readable, newline-separated listing of every symbol count.
-    string serializeSymbols() const;
+    std::string serializeSymbols() const;
 
     // Clears all stat information
     void clear();
