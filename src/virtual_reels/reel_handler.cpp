@@ -21,7 +21,7 @@ void ReelHandler::extractPayoutRows(const nlohmann::json& info) {
         throw std::invalid_argument("Reels is expected to be integer, but found: " + to_string(info));
     }
 
-    payoutRows = info.get<int>();
+    payout_rows = info.get<int>();
 }
 
 void ReelHandler::extractSeed(const nlohmann::json& info) {
@@ -93,6 +93,10 @@ void ReelHandler::extractReels(const nlohmann::json& info, const SymbolHandler& 
 
             throw std::invalid_argument("'reels' can only contain either a string or object, but found: " + to_string(symbol_data));
         }
+
+        if (reel.getStripLength() < payout_rows) {
+            throw std::invalid_argument("reel " + std::to_string(i) + " has less symbols than the requested 'payoutRows'.");
+        }
     }
 }
 #pragma endregion
@@ -113,7 +117,7 @@ SymbolGrid ReelHandler::runSpin() {
 #pragma endregion
 
 #pragma region Accessor Methods
-// Reads the currently visible window (payoutRows) off each reel's landed stop.
+// Reads the currently visible window (payout_rows) off each reel's landed stop.
 SymbolGrid ReelHandler::getSpinResult() {
     auto ret = SymbolGrid(reels.size(), SymbolLine());
 
@@ -121,8 +125,8 @@ SymbolGrid ReelHandler::getSpinResult() {
         const auto& reel = reels[i];
         auto& row = ret[i];
 
-        row.resize(payoutRows);
-        for(uint r = 0; r < payoutRows; r++) {
+        row.resize(payout_rows);
+        for(uint r = 0; r < payout_rows; r++) {
             row[r] = reel.getSymbolAt(r);
         }
     }
@@ -134,7 +138,7 @@ uint ReelHandler::getReelCount() const {
     return reels.size();
 }
 uint ReelHandler::getPayoutRows() const {
-    return payoutRows;
+    return payout_rows;
 }
 uint ReelHandler::getReelLength(uint reelNum) const {
     return reels[reelNum].getStripLength();
@@ -159,7 +163,7 @@ void ReelHandler::seedFromHardware() {
     rng.seed(rd());
 }
 void ReelHandler::clear() {
-    payoutRows = 0;
+    payout_rows = 0;
     stats.clear();
     reels.clear();
 }

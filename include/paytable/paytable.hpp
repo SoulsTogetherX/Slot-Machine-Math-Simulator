@@ -23,6 +23,9 @@ struct PayoutVariant {
     bool withWilds = true;            // Whether WILD may substitute when checking this variant's match.
     int payoutWin = 0;
     int payoutFail = 0;
+
+    // Tracks this variant's own stats.
+    StatsHandler stats;
 };
 
 
@@ -30,15 +33,18 @@ struct PayoutVariant {
 // Overwrite 'scoreLine' to handle different scoring schemes.
 class PayTable {
 private:
-    StatsHandler stats;
-
     std::string id;          // The PayTable's name
     std::string pattern_id;  // The attached Pattern's name
+protected:
+    StatsHandler stats;
 
     // An abstract method to return if the given Symbol convolution is a vaild match for this PayTable
     virtual bool isMatch(const SymbolLine& line) const = 0;
-    // An abstract method to return the payout for this Symbol convolution
-    virtual int scoreLine(const SymbolLine& line, bool& won) const = 0;
+    // An abstract method to return the payout for this Symbol convolution. Subclasses
+    // that track sub-groupings (e.g. PayTableMatching's variants) may report back
+    // which sub-grouping fired via 'matchedVariant', so the caller can record stats
+    // against it too; subclasses without sub-groupings simply ignore the parameter.
+    virtual int scoreLine(const SymbolLine& line, bool& won, PayoutVariant** matchedVariant = nullptr) = 0;
 public:
     PayTable() {};
     PayTable( std::string id, std::string pattern_id) : id(id), pattern_id(pattern_id) {};
@@ -50,11 +56,12 @@ public:
 
     // Pre-seeds this PayTable's stats with every known symbol at a '0' count,
     // so symbols that never land on a winning line still show up in reports.
-    void registerSymbols(const SymbolHandler& symbol_handler);
+    // Virtual so subclasses with sub-groupings (variants) can also pre-seed those.
+    virtual void registerSymbols(const SymbolHandler& symbol_handler);
 
     // Returns the result of a convolution (payout and whether it won), applying
     // per-line-bet scaling to wins when configured, while recording the stats.
-    PayoutResult evaluate(const SymbolLine& line);
+    virtual PayoutResult evaluate(const SymbolLine& line);
 };
 
 // Scores a line as a win only when every (non-wild) symbol on it is identical,
@@ -74,7 +81,7 @@ private:
     bool lineMatchesSymbol(const SymbolLine& line, const Symbol& base, bool withWilds) const;
 
     bool isMatch(const SymbolLine& line) const override;
-    int scoreLine(const SymbolLine& line, bool& won) const override;
+    int scoreLine(const SymbolLine& line, bool& won, PayoutVariant** matchedVariant = nullptr) override;
 public:
     PayTableMatching() {};
     PayTableMatching(
@@ -83,6 +90,17 @@ public:
     PayTableMatching(
         std::string id, std::string pattern_id, std::vector<PayoutVariant> variants, int payoutFail
     ) : PayTable(id, pattern_id), payoutWin(0), payoutFail(payoutFail), variants(std::move(variants)) {};
+
+    // Also pre-seeds every variant's own stats.
+    void registerSymbols(const SymbolHandler& symbol_handler) override;
+    // Applies the win multiplier as before, then records stats against both
+    // this PayTable and (if one fired) the specific PayoutVariant involved.
+    PayoutResult evaluate(const SymbolLine& line) override;
+
+    // Whether this paytable uses per-symbol variants rather than a flat payout.
+    bool hasVariants() const;
+    // Non-owning view of the configured variants, in declaration order.
+    const std::vector<PayoutVariant>& getVariants() const;
 };
 
 #endif  // PAY_TABLE_HPP

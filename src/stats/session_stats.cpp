@@ -18,11 +18,16 @@ void SessionStats::record(double wager, double won, double consolation) {
     if (won > 0) {
         win_spins += 1;
         cur_loss_streak = 0;
+        cur_win_streak += 1;
+        if (cur_win_streak > max_win_streak) {
+            max_win_streak = cur_win_streak;
+        }
     } else {
         cur_loss_streak += 1;
         if (cur_loss_streak > max_loss_streak) {
             max_loss_streak = cur_loss_streak;
         }
+        cur_win_streak = 0;
     }
 
     if (ret > max_win) {
@@ -61,6 +66,9 @@ double SessionStats::getMaxWin() const {
 }
 uint SessionStats::getMaxLossStreak() const {
     return max_loss_streak;
+}
+uint SessionStats::getMaxWinStreak() const {
+    return max_win_streak;
 }
 #pragma endregion
 
@@ -106,5 +114,7 @@ void SessionStats::clear() {
     m2_ratio = 0;
     cur_loss_streak = 0;
     max_loss_streak = 0;
+    cur_win_streak = 0;
+    max_win_streak = 0;
 }
 #pragma endregion

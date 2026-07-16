@@ -1,6 +1,9 @@
 {
   "$schema": "../schema.json",
-  "test_info": { "bet": 1, "test_spins": [1000000] },
+  "test_info": {
+    "bet": 1,
+    "test_spins": 1000000
+  },
   "slots_info": {
     "payout_rows": 3,
     "seed": 42,
@@ -48,7 +51,7 @@
           { "symbols": ["A"], "withWilds": true, "payoutWin": 3 },
           { "symbols": ["B"], "withWilds": false, "payoutWin": 5 },
           { "symbols": ["C"], "withWilds": true, "payoutWin": 4 },
-          { "symbols": ["WILD"], "withWilds": true, "payoutWin": 20 },
+          { "symbols": ["W"], "withWilds": true, "payoutWin": 20 },
           { "symbols": [], "withWilds": true, "payoutWin": 1 }
         ]
       }

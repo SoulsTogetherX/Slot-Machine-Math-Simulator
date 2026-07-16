@@ -101,7 +101,7 @@ std::vector<SymbolLine> DiagonalPattern::convolution(
         for (uint i = 0; i < rows; ++i) {
             uint col = i + idx;
             
-            if (col >= 0 && col < cols) {
+            if (col < cols) {
                 line.push_back(results[i][col]);
             }
         }

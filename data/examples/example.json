@@ -60,7 +60,7 @@
       {
         "id": "p1",
         "match_type": "line",
-        "lineType": "diagonalReversed"
+        "lineType": "row"
       }
     ],
     "paytables": [

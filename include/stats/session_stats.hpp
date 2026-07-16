@@ -30,6 +30,8 @@ private:
 
     uint cur_loss_streak = 0;
     uint max_loss_streak = 0;
+    uint cur_win_streak = 0;
+    uint max_win_streak = 0;
 public:
     // Records one spin's outcome (won and consolation money for that spin).
     void record(double wager, double won, double consolation);
@@ -42,6 +44,7 @@ public:
     double getTotalReturn() const;      // won + consolation
     double getMaxWin() const;
     uint getMaxLossStreak() const;
+    uint getMaxWinStreak() const;
 
     // Derived math (all guard against division by zero)
     double rtp() const;                 // total return / total wager

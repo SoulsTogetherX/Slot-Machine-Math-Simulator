@@ -19,7 +19,7 @@ private:
     StatsHandler stats;
 
     // Screen Info
-    uint payoutRows;
+    uint payout_rows;
     std::vector<VirtualReel> reels;
 
     // RNG
