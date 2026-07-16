@@ -1,0 +1,41 @@
+{
+  "$schema": "../schema.json",
+  "test_info": { "bet": 1, "test_spins": 300000 },
+  "slots_info": {
+    "payout_rows": 1,
+    "seed": 4242,
+    "symbols": [
+      { "id": "A", "type": "normal" },
+      { "id": "B", "type": "normal" },
+      { "id": "C", "type": "normal" }
+    ],
+    "reels": [
+      [
+        { "id": "A", "weight": 8 },
+        { "id": "B", "weight": 1 },
+        { "id": "C", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 8 },
+        { "id": "B", "weight": 1 },
+        { "id": "C", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 8 },
+        { "id": "B", "weight": 1 },
+        { "id": "C", "weight": 1 }
+      ]
+    ],
+    "patterns": [
+      { "id": "row1", "match_type": "line", "lineType": "row", "index": 0 }
+    ],
+    "paytables": [
+      {
+        "id": "pt",
+        "pattern_id": "row1",
+        "symbol_requirement": "matching",
+        "payoutWin": 2
+      }
+    ]
+  }
+}

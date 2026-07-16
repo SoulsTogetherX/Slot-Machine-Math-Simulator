@@ -1,0 +1,60 @@
+{
+  "$schema": "../schema.json",
+  "test_info": { "bet": 1, "test_spins": 200000 },
+  "slots_info": {
+    "payout_rows": 3,
+    "seed": 777,
+    "symbols": [
+      { "id": "CHERRY", "type": "normal" },
+      { "id": "LEMON", "type": "normal" },
+      { "id": "PLUM", "type": "normal" },
+      { "id": "STAR", "type": "normal" }
+    ],
+    "reels": [
+      [
+        { "id": "CHERRY", "weight": 4 },
+        { "id": "LEMON", "weight": 4 },
+        { "id": "PLUM", "weight": 4 },
+        { "id": "STAR", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 4 },
+        { "id": "LEMON", "weight": 4 },
+        { "id": "PLUM", "weight": 4 },
+        { "id": "STAR", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 4 },
+        { "id": "LEMON", "weight": 4 },
+        { "id": "PLUM", "weight": 4 },
+        { "id": "STAR", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 4 },
+        { "id": "LEMON", "weight": 4 },
+        { "id": "PLUM", "weight": 4 },
+        { "id": "STAR", "weight": 1 }
+      ]
+    ],
+    "patterns": [
+      {
+        "id": "col_1_4",
+        "match_type": "line",
+        "lineType": "col",
+        "index": [0, 3]
+      }
+    ],
+    "paytables": [
+      {
+        "id": "vertical_match",
+        "pattern_id": "col_1_4",
+        "symbol_requirement": "matching",
+        "payoutFail": 0,
+        "variants": [
+          { "symbols": ["STAR"], "withWilds": false, "payoutWin": 10 },
+          { "symbols": [], "withWilds": false, "payoutWin": 2 }
+        ]
+      }
+    ]
+  }
+}

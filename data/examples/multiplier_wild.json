@@ -1,0 +1,46 @@
+{
+  "$schema": "../schema.json",
+  "test_info": { "bet": 1, "test_spins": 300000 },
+  "slots_info": {
+    "payout_rows": 1,
+    "seed": 99,
+    "symbols": [
+      { "id": "CHERRY", "type": "normal" },
+      { "id": "BELL", "type": "normal", "multiplier": 2 },
+      { "id": "SEVEN", "type": "normal", "multiplier": 3 },
+      { "id": "WILD", "type": "wild", "multiplier": 2 }
+    ],
+    "reels": [
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BELL", "weight": 3 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BELL", "weight": 3 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BELL", "weight": 3 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ]
+    ],
+    "patterns": [
+      { "id": "center", "match_type": "line", "lineType": "row", "index": 0 }
+    ],
+    "paytables": [
+      {
+        "id": "pt",
+        "pattern_id": "center",
+        "symbol_requirement": "matching",
+        "payoutWin": 5,
+        "payoutFail": 0
+      }
+    ]
+  }
+}

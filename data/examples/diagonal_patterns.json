@@ -1,0 +1,76 @@
+{
+  "$schema": "../schema.json",
+  "test_info": { "bet": 2, "test_spins": 250000 },
+  "slots_info": {
+    "payout_rows": 3,
+    "seed": 314159,
+    "symbols": [
+      { "id": "A", "type": "normal" },
+      { "id": "B", "type": "normal" },
+      { "id": "C", "type": "normal" },
+      { "id": "W", "type": "wild" }
+    ],
+    "reels": [
+      [
+        { "id": "A", "weight": 3 },
+        { "id": "B", "weight": 3 },
+        { "id": "C", "weight": 3 },
+        { "id": "W", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 3 },
+        { "id": "B", "weight": 3 },
+        { "id": "C", "weight": 3 },
+        { "id": "W", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 3 },
+        { "id": "B", "weight": 3 },
+        { "id": "C", "weight": 3 },
+        { "id": "W", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 3 },
+        { "id": "B", "weight": 3 },
+        { "id": "C", "weight": 3 },
+        { "id": "W", "weight": 1 }
+      ],
+      [
+        { "id": "A", "weight": 3 },
+        { "id": "B", "weight": 3 },
+        { "id": "C", "weight": 3 },
+        { "id": "W", "weight": 1 }
+      ]
+    ],
+    "patterns": [
+      {
+        "id": "diag_down",
+        "match_type": "line",
+        "lineType": "diagonal",
+        "index": [0, 1, 2]
+      },
+      {
+        "id": "diag_up",
+        "match_type": "line",
+        "lineType": "diagonalReversed",
+        "index": [3, 4, 5]
+      }
+    ],
+    "paytables": [
+      {
+        "id": "pt_down",
+        "pattern_id": "diag_down",
+        "symbol_requirement": "matching",
+        "payoutWin": 4,
+        "payoutFail": 0
+      },
+      {
+        "id": "pt_up",
+        "pattern_id": "diag_up",
+        "symbol_requirement": "matching",
+        "payoutWin": 4,
+        "payoutFail": 0
+      }
+    ]
+  }
+}

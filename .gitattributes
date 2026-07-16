@@ -1,0 +1,8 @@
+# Force all files detected as text to use CRLF on checkout
+* text eol=crlf
+
+# Explicitly leave binary files alone so they do not corrupt
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

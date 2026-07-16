@@ -1,0 +1,76 @@
+{
+  "$schema": "../schema.json",
+  "test_info": {
+    "bet": 1,
+    "test_spins": [100000]
+  },
+  "slots_info": {
+    "payout_rows": 2,
+    "seed": "auto",
+    "symbols": [
+      {
+        "id": "CHERRY",
+        "type": "normal"
+      },
+      {
+        "id": "BAR",
+        "type": "normal"
+      },
+      {
+        "id": "SEVEN",
+        "type": "normal"
+      }
+    ],
+    "reels": [
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ],
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ],
+      [
+        {
+          "id": "CHERRY",
+          "repeat": 2
+        },
+        "SEVEN",
+        {
+          "id": "BAR",
+          "repeat": 1
+        }
+      ]
+    ],
+    "patterns": [
+      {
+        "id": "p1",
+        "match_type": "line",
+        "lineType": "row"
+      }
+    ],
+    "paytables": [
+      {
+        "id": "pt1",
+        "pattern_id": "p1",
+        "symbol_requirement": "matching",
+        "payoutWin": 1,
+        "payoutFail": 0
+      }
+    ]
+  }
+}

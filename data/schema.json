@@ -1,0 +1,203 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Config file for the Slot Machine Math Simulator. Describes a slot machine's math model ('slots_info') and, optionally, how to batch-test it ('test_info').",
+  "type": "object",
+  "properties": {
+    "test_info": {
+      "type": "object",
+      "description": "Information related to testing (spin count, wager). If omitted, the machine is still parsed, but is not tested.",
+      "properties": {
+        "test_spins": {
+          "description": "How many spins to run. A single integer runs that many spins and prints one report at the end. An array of integers runs the spins in cumulative stages, printing a report at each checkpoint.",
+          "anyOf": [
+            { "type": "integer" },
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          ]
+        },
+        "bet": {
+          "type": "integer",
+          "description": "The flat wager staked on every spin, used to compute RTP/volatility figures.\n\nDefaults to 1."
+        }
+      },
+      "required": ["test_spins"]
+    },
+    "slots_info": {
+      "type": "object",
+      "description": "The configuration of the slotmachine itself, including symbols, patterns, payouts, and virtual reels.",
+      "properties": {
+        "payout_rows": {
+          "type": "integer",
+          "description": "The number of rows visible on-screen per spin on each reel."
+        },
+        "seed": {
+          "description": "The RNG seed used to spin the reels. Can either be an integer or 'auto'. 'Auto' seeds from hardware randomness.\n\nDefaults to 'auto'.",
+          "anyOf": [{ "type": "string" }, { "type": "integer" }]
+        },
+        "symbols": {
+          "type": "array",
+          "description": "Every symbol usable on the reels, referenced elsewhere by 'id'.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The symbol's unique name."
+              },
+              "type": {
+                "type": "string",
+                "enum": ["normal", "wild"],
+                "description": "'normal' behaves as an ordinary symbol.\n'wild' substitutes for any other symbol when a paytable/variant checks for a match.\n\nDefaults to 'normal' if omitted."
+              },
+              "multiplier": {
+                "type": "integer",
+                "description": "Multiplies the payout of any winning line this symbol takes part in. When a line wins, the multipliers of every symbol on that line are multiplied together and applied to the payout.\n\nDefaults to 1."
+              }
+            },
+            "required": ["id", "type"]
+          }
+        },
+        "reels": {
+          "type": "array",
+          "description": "One entry per physical reel, ordered left to right.",
+          "items": {
+            "type": "array",
+            "description": "One reel's physical strip, defined stop-by-stop in strip order.",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "description": "A physical stop (or run of stops) of one symbol.",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The symbol id placed at this stop (must be defined in 'symbols')."
+                    },
+                    "repeat": {
+                      "type": "integer",
+                      "description": "How many consecutive physical stops of this symbol to add to the strip, each carring 'weight' virtual stops.\n\nDefaults to 1."
+                    },
+                    "weight": {
+                      "type": "integer",
+                      "description": "The number of virtual stops assigned to each physical stop of this symbol, controlling how often it's landed on relative to other stops on the same reel.\n\nDefaults to 1."
+                    }
+                  },
+                  "required": ["id"]
+                },
+                {
+                  "type": "string",
+                  "description": "The symbol id placed at this stop (must be defined in 'symbols').\n\n'weight' and 'repeat' defaults to 1."
+                }
+              ]
+            }
+          }
+        },
+        "patterns": {
+          "type": "array",
+          "description": "Defines the subsets of symbols, on the visible screen, evaluated each spin.",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The pattern's unique name, referenced by paytables via 'pattern_id'."
+                  },
+                  "match_type": {
+                    "type": "string",
+                    "const": "line",
+                    "description": "The type of pattern.\n'line' is a single straight line of symbols."
+                  },
+                  "lineType": {
+                    "type": "string",
+                    "enum": ["row", "col", "diagonal", "diagonalReversed"],
+                    "description": "The line's orientation.\n'row': one horizontal line across every reel at a given visible row.\n'col': a single reel's own visible rows read top-to-bottom.\n'diagonal': a line stepping down-and-right by one row per reel, starting from the given position.\n'diagonalReversed': a line stepping down-and-left by one row per reel."
+                  },
+                  "index": {
+                    "description": "The 0-based line index/indices to evaluate: which row(s), reel column(s), or diagonal starting offset(s), depending on 'lineType'. Accepts a single integer or an array of integers, each producing its own separate convolution.\n\nIf omitted, every valid line of that orientation is used.",
+                    "anyOf": [
+                      { "type": "integer" },
+                      { "type": "array", "items": { "type": "integer" } }
+                    ]
+                  }
+                },
+                "required": ["id", "lineType", "match_type"]
+              }
+            ]
+          }
+        },
+        "paytables": {
+          "type": "array",
+          "description": "Scoring rules attached to patterns.\nEach spin, every paytable evaluates every line its pattern produced and sums the payouts into that spin's total win/consolation amounts.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The paytable's unique name, used only for reporting."
+              },
+              "pattern_id": {
+                "type": "string",
+                "description": "The patterns id whose convolution(s) this paytable scores (must be defined in 'patterns')."
+              },
+              "symbol_requirement": {
+                "type": "string",
+                "enum": ["matching"],
+                "description": "The scoring scheme. \n'matching' scores a win when every symbol on it is identical. An all-wild line always counts as a match."
+              },
+              "payoutWin": {
+                "type": "number",
+                "description": "Flat credits paid when a line matches, when 'variants' is not set.\nIf 'variants' is set, this property will be ignored."
+              },
+              "payoutFail": {
+                "type": "number",
+                "description": "Flat consolation credits paid when a line does NOT match.\nIf 'variants' is set, this property will be ignored.\n\nDefaults to 0."
+              },
+              "variants": {
+                "type": "array",
+                "description": "An optional list of per-symbol payout rules, evaluated in order. For an all-wild line (no base symbol), only a variant explicitly listing the symbol id 'WILD' can match it.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "symbols": {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "description": "The symbol ids this variant applies to. An empty or omitted array is a catch-all matching any base symbol not claimed by an earlier variant."
+                    },
+                    "withWilds": {
+                      "type": "boolean",
+                      "description": "If 'true', WILD symbols may substitute for requested symbols when checking for a line match.\n\nDefaults to true."
+                    },
+                    "payoutWin": {
+                      "type": "number",
+                      "description": "Credits paid when this variant's line matches.\n\nDefaults to 1."
+                    },
+                    "payoutFail": {
+                      "type": "number",
+                      "description": "Consolation credits paid when this variant's line does not match.\n\nDefaults to 0."
+                    }
+                  }
+                }
+              }
+            },
+            "required": ["id", "pattern_id", "symbol_requirement"]
+          }
+        }
+      },
+      "required": [
+        "payout_rows",
+        "seed",
+        "symbols",
+        "reels",
+        "patterns",
+        "paytables"
+      ]
+    }
+  },
+  "required": ["slots_info"]
+}
