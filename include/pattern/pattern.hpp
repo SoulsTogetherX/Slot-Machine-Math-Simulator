@@ -27,19 +27,11 @@ public:
     virtual std::vector<SymbolLine> convolution(
         const SymbolGrid &results
     ) const = 0;
-};
 
-// The class that convolutions the slot screen into horizontal row paylines.
-class LinePattern : public Pattern {
-private:
-    std::vector<uint> rows; // The rows being convoluted over.
-public:
-    LinePattern() {};
-    LinePattern(std::string id, std::vector<uint> rows) : Pattern(id), rows(std::move(rows)) {};
-
-    std::vector<SymbolLine> convolution(
-        const SymbolGrid &results
-    ) const override;
+    // Returns a short human-readable description of this pattern's type and
+    // configuration.
+    // Default falls back to just the pattern's kind being unknown.
+    virtual std::string describe() const { return "pattern"; }
 };
 
 #endif  // PATTERN_HPP

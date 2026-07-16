@@ -15,7 +15,7 @@ SlotMachine::SlotMachine() {
 SlotMachine::SlotMachine(const nlohmann::json& data) {
     loadJson(data);
 }
-#pragma endregion endregion
+#pragma endregion
 
 #pragma region Load Info
 void SlotMachine::loadJson(const nlohmann::json& info) {
@@ -31,7 +31,7 @@ void SlotMachine::loadJson(const nlohmann::json& info) {
     pattern_handler.loadJson(info, reel_handler);
 
     // Paytable
-    paytable_handler.loadJson(info, pattern_handler);
+    paytable_handler.loadJson(info, pattern_handler, symbol_handler);
 
     // Cache which patterns are actually scored, so spins convolve only those.
     referenced_patterns = paytable_handler.getReferencedPatternIds();
@@ -56,9 +56,9 @@ const PayTableHandler& SlotMachine::getPayTableHandler() const {
 #pragma region Runner
 // Spins the slot machine once
 SpinResult SlotMachine::spinBet() {
-    auto screen = reel_handler.runSpin();
-    auto cache = pattern_handler.convolveAll(screen, referenced_patterns);
-    auto payouts = paytable_handler.evaluateAll(cache);
+    const auto screen = reel_handler.runSpin();
+    const auto cache = pattern_handler.convolveAll(screen, referenced_patterns);
+    const auto payouts = paytable_handler.evaluateAll(cache);
 
     double won = 0;
     double consolation = 0;

@@ -1,6 +1,7 @@
 #include <nlohmann/json.hpp>
 
 #include "pattern/pattern_handler.hpp"
+#include "pattern/custom_patterns/line_pattern.hpp"
 #include "utils/types.hpp"
 #include "utils/extracts.hpp"
 
@@ -16,15 +17,45 @@ void PatternHandler::extractPatterns(const nlohmann::json& info, const ReelHandl
     }
 
     for(const auto& it : info) {
-        std::string id = extractStr("id", it);
+        const std::string id = extractStr("id", it);
         if (hasPattern(id)) {
             throw std::invalid_argument("Pattern id '" + id + "' has already been defined.");
         }
 
-        std::string match_type = extractStr("match_type", it);
+        const std::string match_type = extractStr("match_type", it);
         if (match_type == "line") {
-            std::vector<uint> rows = extractRows(it, reel_handler.getPayoutRows());
-            patterns[id] = std::make_unique<LinePattern>(id, rows);
+            const std::string line_type = extractStr("lineType", it);
+            if (line_type == "row") {
+                std::vector<uint> indexes = extractIndexes(
+                    it,
+                    // Number of rows
+                    reel_handler.getPayoutRows()
+                );
+                patterns[id] = std::make_unique<RowPattern>(id, indexes);
+            } else if (line_type == "col") {
+                std::vector<uint> indexes = extractIndexes(
+                    it,
+                    // Number of columns
+                    reel_handler.getReelCount()
+                );
+                patterns[id] = std::make_unique<ColumnPattern>(id, indexes);
+            } else if (line_type == "diagonal") {
+                std::vector<uint> indexes = extractIndexes(
+                    it,
+                    // Number of rows + columns - 1
+                    reel_handler.getPayoutRows() + reel_handler.getReelCount() - 1
+                );
+                patterns[id] = std::make_unique<DiagonalPattern>(id, indexes);
+            } else if (line_type == "diagonalReversed") {
+                std::vector<uint> indexes = extractIndexes(
+                    it,
+                    // Number of rows + columns - 1
+                    reel_handler.getPayoutRows() + reel_handler.getReelCount() - 1
+                );
+                patterns[id] = std::make_unique<DiagonalReversedPattern>(id, indexes);
+            } else {
+                throw std::invalid_argument("Unknown 'lineType' found: " + line_type);
+            }
             continue;
         } else {
             throw std::invalid_argument("Pattern's '" + match_type + "' is an invaild value.");
@@ -32,38 +63,40 @@ void PatternHandler::extractPatterns(const nlohmann::json& info, const ReelHandl
     }
 }
 
-std::vector<uint> PatternHandler::extractRows(const nlohmann::json& it, uint payout_rows) {
-    if (!hasKey("row", it)) {
-        throw std::out_of_range("Line pattern requires a 'row'.");
+std::vector<uint> PatternHandler::extractIndexes(const nlohmann::json& info, uint maxIndex) {
+    if (!hasKey("index", info)) {
+        return std::vector<uint>();
     }
 
-    const nlohmann::json& row_info = it.at("row");
-    std::vector<uint> rows;
+    const nlohmann::json& line_info = info.at("index");
+    std::vector<uint> lines;
 
-    auto add_row = [&](int r) {
-        if (r <= 0 || static_cast<uint>(r) > payout_rows) {
-            throw std::range_error("Line pattern has an invalid row: " + std::to_string(r));
+    auto add_line = [&](int idx) {
+        if (idx < 0 || static_cast<uint>(idx) >= maxIndex) {
+            throw std::range_error("Line pattern has an invalid index: " + std::to_string(idx));
+        } else if (std::find(lines.begin(), lines.end(), idx) != lines.end()) {
+            throw std::range_error("Line pattern has a duplicate index: " + std::to_string(idx));
         }
-        rows.push_back(static_cast<uint>(r));
+        lines.push_back(static_cast<uint>(idx));
     };
 
-    if (row_info.is_number_integer()) {
-        add_row(row_info.get<int>());
-    } else if (row_info.is_array()) {
-        if (row_info.empty()) {
-            throw std::invalid_argument("Line pattern 'row' array must not be empty.");
+    if (line_info.is_number_integer()) {
+        add_line(line_info.get<int>());
+    } else if (line_info.is_array()) {
+        if (line_info.empty()) {
+            throw std::invalid_argument("Line pattern 'index' array must not be empty.");
         }
-        for (const auto& r : row_info) {
-            if (!r.is_number_integer()) {
-                throw std::invalid_argument("Line pattern 'row' array must contain integers.");
+        for (const auto& line : line_info) {
+            if (!line.is_number_integer()) {
+                throw std::invalid_argument("Line pattern 'index' array must contain only integer indexes.");
             }
-            add_row(r.get<int>());
+            add_line(line.get<int>());
         }
     } else {
-        throw std::invalid_argument("Line pattern 'row' must be an integer or an array of integers.");
+        throw std::invalid_argument("Line pattern 'index' must be an integer or an array of integers.");
     }
 
-    return rows;
+    return lines;
 }
 #pragma endregion
 

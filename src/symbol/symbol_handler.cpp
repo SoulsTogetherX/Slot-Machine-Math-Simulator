@@ -17,27 +17,23 @@ void SymbolHandler::extractSymbols(const nlohmann::json& info) {
     }
 
     for (const auto& it : info) {
-        std::string id = extractStr("id", it);
+        const std::string id = extractStr("id", it);
         if (symbols.find(id) != symbols.end()) {
             throw std::invalid_argument("Symbol'" + id + "' was previously defined.");
         }
         
+        const std::string str_type = extractStr("type", it, "normal");
         SYMBOL_TYPE type;
-        std::string str_type = extractStr("type", it, "normal");
 
         if (str_type == "normal") {
             type = NORMAL;
         } else if (str_type == "wild") {
             type = WILD;
-        } else if (str_type == "scatter") {
-            type = SCATTER;
-        } else if (str_type == "bonus") {
-            type = BONUS;
         } else {
             throw std::invalid_argument("Unknown 'type' found: " + str_type);
         }
 
-        int multiplier = extractInt("multiplier", it, 1);
+        const int multiplier = extractInt("multiplier", it, 1);
         symbols[id] = Symbol(id, type, multiplier);
     }
 }

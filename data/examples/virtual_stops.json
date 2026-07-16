@@ -1,6 +1,6 @@
 {
   "$schema": "../schema.json",
-  "test_info": { "bet": 1 },
+  "test_info": { "bet": 1, "test_spins": 300000 },
   "slots_info": {
     "payout_rows": 1,
     "seed": 4242,
@@ -26,7 +26,9 @@
         { "id": "C", "weight": 1 }
       ]
     ],
-    "patterns": [{ "id": "row1", "match_type": "line", "row": 1 }],
+    "patterns": [
+      { "id": "row1", "match_type": "line", "lineType": "row", "index": 0 }
+    ],
     "paytables": [
       {
         "id": "pt",

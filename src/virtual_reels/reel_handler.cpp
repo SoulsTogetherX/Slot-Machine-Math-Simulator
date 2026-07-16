@@ -13,6 +13,7 @@ void ReelHandler::loadJson(
     extractPayoutRows(info.at("payout_rows"));
     extractSeed(info);
     extractReels(info.at("reels"), symbol_handler);
+    stats.registerSymbols(symbol_handler);
 }
 
 void ReelHandler::extractPayoutRows(const nlohmann::json& info) {
@@ -35,7 +36,7 @@ void ReelHandler::extractSeed(const nlohmann::json& info) {
         rng.seed(static_cast<std::mt19937::result_type>(seed_info.get<int>()));
         return;
     } else if (seed_info.is_string()) {
-        std::string str_check = seed_info.get<std::string>();
+        const std::string str_check = seed_info.get<std::string>();
 
         if (str_check == "auto") {
             seedFromHardware();
@@ -62,7 +63,6 @@ void ReelHandler::extractReels(const nlohmann::json& info, const SymbolHandler& 
         
         for(const auto& symbol_data : reel_data) {
             if (symbol_data.is_string()) {
-                // Direct Symbol: a single, evenly-weighted physical stop.
                 std::string id = symbol_data.get<std::string>();
                 if (!symbol_handler.hasSymbol(id)) {
                     throw std::invalid_argument("Symbol '" + id + "' not defined in symbol table.");
@@ -76,11 +76,10 @@ void ReelHandler::extractReels(const nlohmann::json& info, const SymbolHandler& 
                     throw std::invalid_argument("Symbol '" + id + "' not defined in symbol table.");
                 }
 
-                // 'repeat' adds this many consecutive physical stops (affects adjacency
-                // on-screen); 'weight' is the virtual-stop count given to each of those
-                // physical stops (affects landing probability). The two are independent.
-                int repeat = extractInt("repeat", symbol_data, 1);
-                int weight = extractInt("weight", symbol_data, 1);
+                // 'repeat' adds this many consecutive physical stops.
+                // 'weight' is the virtual-stop count given to each of those physical stops.
+                const int repeat = extractInt("repeat", symbol_data, 1);
+                const int weight = extractInt("weight", symbol_data, 1);
                 if (repeat < 0 || weight < 0) {
                     throw std::invalid_argument("'repeat' and 'weight' must be non-negative.");
                 }
@@ -100,13 +99,13 @@ void ReelHandler::extractReels(const nlohmann::json& info, const SymbolHandler& 
 
 #pragma region Run Methods
 // Spins every reel independently, then reads off the resulting on-screen grid and
-// tallies it into this handler's stats (screen-level symbol frequency across all spins).
+// tallies it into this handler's stats.
 SymbolGrid ReelHandler::runSpin() {
     for(uint i = 0; i < reels.size(); i++) {
         reels[i].spin(rng);
     }
 
-    auto results = getSpinResult();
+    const auto results = getSpinResult();
     stats.addSymbolMass(results);
     stats.increaseCount(1);
     return results;
@@ -114,12 +113,12 @@ SymbolGrid ReelHandler::runSpin() {
 #pragma endregion
 
 #pragma region Accessor Methods
-// Reads the currently visible window (payoutRows deep) off each reel's landed stop.
+// Reads the currently visible window (payoutRows) off each reel's landed stop.
 SymbolGrid ReelHandler::getSpinResult() {
     auto ret = SymbolGrid(reels.size(), SymbolLine());
 
     for(uint i = 0; i < reels.size(); i++) {
-        auto& reel = reels[i];
+        const auto& reel = reels[i];
         auto& row = ret[i];
 
         row.resize(payoutRows);
@@ -143,7 +142,7 @@ uint ReelHandler::getReelLength(uint reelNum) const {
 uint ReelHandler::getMaxReelLength() const {
     uint ret = 0;
     for(uint i = 0; i < getReelCount(); i++) {
-        uint temp = getReelLength(i);
+        const uint temp = getReelLength(i);
         ret = ret > temp ? ret : temp;
     }
     return ret;

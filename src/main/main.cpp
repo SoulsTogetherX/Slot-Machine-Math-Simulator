@@ -8,16 +8,22 @@
 
 
 
-// Entry point: loads a machine config (path from argv[1], falling back to the
-// bundled example), then runs a fixed batch of test spins and prints the results.
+#pragma region Constants
+const std::string PATH_BASE = "data/examples/";
+#pragma endregion
+
+#pragma region Mains
 int main(int argc, char** argv) {
     // Gets pathname
-    std::string pathname = "data/examples/example.json";
+    std::string pathname;
     if (argc > 1) {
-        pathname = argv[1];
+        pathname = PATH_BASE + argv[1];
+    } else {
+        pathname = PATH_BASE + "example.json";
     }
     std::cout << "Reading JSON from: " << pathname << "\n\n";
 
+    // Gets Json
     std::ifstream file(pathname);
     if (!file) {
         throw std::runtime_error("Could not open file: " + pathname);
@@ -30,3 +36,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+#pragma endregion

@@ -7,26 +7,37 @@
     "symbols": [
       { "id": "A", "type": "normal" },
       { "id": "B", "type": "normal" },
+      { "id": "C", "type": "normal" },
       { "id": "W", "type": "wild" }
     ],
     "reels": [
       [
-        { "id": "A", "weight": 2 },
+        { "id": "A", "weight": 5 },
         { "id": "B", "weight": 2 },
+        { "id": "C", "weight": 5 },
         { "id": "W", "weight": 1 }
       ],
       [
-        { "id": "A", "weight": 2 },
+        { "id": "A", "weight": 5 },
         { "id": "B", "weight": 2 },
+        { "id": "C", "weight": 5 },
         { "id": "W", "weight": 1 }
       ],
       [
-        { "id": "A", "weight": 2 },
+        { "id": "A", "weight": 5 },
         { "id": "B", "weight": 2 },
+        { "id": "C", "weight": 5 },
         { "id": "W", "weight": 1 }
       ]
     ],
-    "patterns": [{ "id": "middle_row", "match_type": "line", "row": 2 }],
+    "patterns": [
+      {
+        "id": "middle_row",
+        "match_type": "line",
+        "lineType": "row",
+        "index": 1
+      }
+    ],
     "paytables": [
       {
         "id": "pt",
@@ -34,8 +45,11 @@
         "symbol_requirement": "matching",
         "payoutFail": 0,
         "variants": [
-          { "symbols": ["A"], "withWilds": true, "payoutWin": 50 },
-          { "symbols": ["B"], "withWilds": false, "payoutWin": 5 }
+          { "symbols": ["A"], "withWilds": true, "payoutWin": 3 },
+          { "symbols": ["B"], "withWilds": false, "payoutWin": 5 },
+          { "symbols": ["C"], "withWilds": true, "payoutWin": 4 },
+          { "symbols": ["WILD"], "withWilds": true, "payoutWin": 20 },
+          { "symbols": [], "withWilds": true, "payoutWin": 1 }
         ]
       }
     ]

@@ -9,49 +9,47 @@
 
 #pragma region Extract Info Helpers
 void PayTableHandler::loadJson(
-    const nlohmann::json& info, const PatternHandler& pattern_handler
+    const nlohmann::json& info, const PatternHandler& pattern_handler,
+    const SymbolHandler& symbol_handler
 ) {
-    extractPayTables(info.at("paytables"), pattern_handler);
+    extractPayTables(info.at("paytables"), pattern_handler, symbol_handler);
 }
 void PayTableHandler::extractPayTables(
-    const nlohmann::json& info, const PatternHandler& pattern_handler
+    const nlohmann::json& info, const PatternHandler& pattern_handler,
+    const SymbolHandler& symbol_handler
 ) {
     if (!info.is_array()) {
         throw std::invalid_argument("Paytables is expected to be array, but found: " + to_string(info));
     }
 
     for(const auto& it : info) {
-        std::string id = extractStr("id", it);
+        const std::string id = extractStr("id", it);
         if (hasPayTable(id)) {
             throw std::invalid_argument("PayTable id '" + id + "' has already been defined.");
         }
 
-        std::string pattern_id = extractStr("pattern_id", it);
+        const std::string pattern_id = extractStr("pattern_id", it);
         if (!pattern_handler.hasPattern(pattern_id)) {
             throw std::invalid_argument("Pattern id '" + pattern_id + "' has not been defined.");
         }
 
-        int payoutFail = extractInt("payoutFail", it, 0);
-        std::string symbol_requirement = extractStr("symbol_requirement", it);
+        const int payoutFail = extractInt("payoutFail", it, 0);
+        const std::string symbol_requirement = extractStr("symbol_requirement", it);
 
         if (symbol_requirement == "matching") {
-            if (hasKey("variants", it) && hasKey("payoutWin", it)) {
-                throw std::invalid_argument(
-                    "PayTable '" + id + "' cannot specify both 'variants' and a flat 'payoutWin'; use one or the other."
-                );
-            }
-
             if (hasKey("variants", it)) {
                 std::vector<PayoutVariant> variants = extractVariants(it);
                 paytables[id] = std::make_unique<PayTableMatching>(
                     id, pattern_id, std::move(variants), payoutFail
                 );
             } else {
-                int payout = extractInt("payoutWin", it);
+                int payout = extractInt("payoutWin", it, 1);
                 paytables[id] = std::make_unique<PayTableMatching>(
                     id, pattern_id, payout, payoutFail
                 );
             }
+            
+            paytables[id]->registerSymbols(symbol_handler);
             continue;
         } else {
             throw std::invalid_argument("Paytable's 'symbol_requirement' is an invaild value.");

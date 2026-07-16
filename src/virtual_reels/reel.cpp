@@ -13,8 +13,7 @@ const Symbol* VirtualReel::getSymbolAt(uint idx) const {
     return strip[(current_pos + idx) % strip.size()];
 }
 
-// Appends a stop and grows the running weight total; 'dist' is rebuilt each call
-// since its upper bound (total_weight - 1) changes as stops are added during setup.
+// Appends a stop and grows the running weight total; 'dist' is rebuilt each call.
 void VirtualReel::addStop(const Symbol &s, uint weight) {
     strip.push_back(&s);
     total_weight += weight;
@@ -35,9 +34,7 @@ uint VirtualReel::getTotalWeight() const {
 
 #pragma region Run Methods
 // Picks a uniformly random virtual stop in [0, total_weight), then maps it to its
-// physical stop via binary search on the cumulative weights (the first stop whose
-// running total exceeds it). Heavier stops occupy a wider slice of the range and so
-// land more often, independent of how many physical positions they occupy on the strip.
+// physical stop.
 void VirtualReel::spin(std::mt19937 &rng) {
     if (total_weight == 0) {
         return;

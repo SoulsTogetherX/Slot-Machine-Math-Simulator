@@ -7,6 +7,7 @@
 #include "utils/symbol_types.hpp"
 #include "stats/stats_handler.hpp"
 #include "symbol/symbol.hpp"
+#include "symbol/symbol_handler.hpp"
 
 
 // The result of scoring one convolution: the credits awarded, and whether it
@@ -17,10 +18,6 @@ struct PayoutResult {
 };
 
 // One entry of a PayTableMatching's optional per-symbol payout rules.
-// A convolution's base symbol picks the first Variant whose 'symbols' list
-// contains it (an empty 'symbols' list means "matches any symbol" -- useful
-// as a catch-all/default variant). That Variant's own 'withWilds' and
-// payouts are then used instead of the PayTableMatching's flat ones.
 struct PayoutVariant {
     std::vector<std::string> symbols; // Eligible base symbol ids. Empty = any symbol.
     bool withWilds = true;            // Whether WILD may substitute when checking this variant's match.
@@ -51,6 +48,10 @@ public:
     std::string getPatternId() const;
     const StatsHandler& getStats() const;
 
+    // Pre-seeds this PayTable's stats with every known symbol at a '0' count,
+    // so symbols that never land on a winning line still show up in reports.
+    void registerSymbols(const SymbolHandler& symbol_handler);
+
     // Returns the result of a convolution (payout and whether it won), applying
     // per-line-bet scaling to wins when configured, while recording the stats.
     PayoutResult evaluate(const SymbolLine& line);
@@ -60,7 +61,7 @@ public:
 // paying a flat 'payoutWin' (or 'payoutFail' otherwise).
 class PayTableMatching : public PayTable {
 private:
-    int payoutWin;    // Used only when 'variants' is empty (flat/legacy behavior).
+    int payoutWin;    // Used only when 'variants' is empty.
     int payoutFail;   // Payout when not won; also the fallback when no variant's
                       // symbol filter matches the line's base symbol at all.
     std::vector<PayoutVariant> variants;

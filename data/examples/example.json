@@ -5,7 +5,7 @@
     "test_spins": [100000]
   },
   "slots_info": {
-    "payout_rows": 1,
+    "payout_rows": 2,
     "seed": "auto",
     "symbols": [
       {
@@ -58,15 +58,15 @@
     ],
     "patterns": [
       {
-        "id": "row",
+        "id": "p1",
         "match_type": "line",
-        "row": 1
+        "lineType": "diagonalReversed"
       }
     ],
     "paytables": [
       {
-        "id": "paytable_1",
-        "pattern_id": "row",
+        "id": "pt1",
+        "pattern_id": "p1",
         "symbol_requirement": "matching",
         "payoutWin": 1,
         "payoutFail": 0

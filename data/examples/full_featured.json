@@ -1,0 +1,82 @@
+{
+  "$schema": "../schema.json",
+  "test_info": { "bet": 2, "test_spins": [50000, 500000, 2000000] },
+  "slots_info": {
+    "payout_rows": 3,
+    "seed": 20260716,
+    "symbols": [
+      { "id": "CHERRY", "type": "normal" },
+      { "id": "BAR", "type": "normal" },
+      { "id": "BELL", "type": "normal", "multiplier": 2 },
+      { "id": "SEVEN", "type": "normal", "multiplier": 3 },
+      { "id": "WILD", "type": "wild" }
+    ],
+    "reels": [
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BAR", "weight": 5 },
+        { "id": "BELL", "weight": 3, "repeat": 2 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BAR", "weight": 5 },
+        { "id": "BELL", "weight": 3, "repeat": 2 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ],
+      [
+        { "id": "CHERRY", "weight": 6 },
+        { "id": "BAR", "weight": 5 },
+        { "id": "BELL", "weight": 3, "repeat": 2 },
+        { "id": "SEVEN", "weight": 1 },
+        { "id": "WILD", "weight": 1 }
+      ]
+    ],
+    "patterns": [
+      { "id": "all_rows", "match_type": "line", "lineType": "row" },
+      {
+        "id": "diag_v",
+        "match_type": "line",
+        "lineType": "diagonal",
+        "index": 0
+      },
+      {
+        "id": "diag_rv",
+        "match_type": "line",
+        "lineType": "diagonalReversed",
+        "index": 2
+      }
+    ],
+    "paytables": [
+      {
+        "id": "row_wins",
+        "pattern_id": "all_rows",
+        "symbol_requirement": "matching",
+        "payoutFail": 0,
+        "variants": [
+          { "symbols": ["SEVEN"], "withWilds": true, "payoutWin": 50 },
+          { "symbols": ["BELL"], "withWilds": true, "payoutWin": 20 },
+          { "symbols": ["BAR"], "withWilds": false, "payoutWin": 10 },
+          { "symbols": ["CHERRY"], "withWilds": true, "payoutWin": 5 },
+          { "symbols": [], "withWilds": true, "payoutWin": 2 }
+        ]
+      },
+      {
+        "id": "diagonal_consolation",
+        "pattern_id": "diag_v",
+        "symbol_requirement": "matching",
+        "payoutWin": 15,
+        "payoutFail": 1
+      },
+      {
+        "id": "diagonal_reversed_bonus",
+        "pattern_id": "diag_rv",
+        "symbol_requirement": "matching",
+        "payoutWin": 15,
+        "payoutFail": 0
+      }
+    ]
+  }
+}

@@ -33,6 +33,10 @@ public:
     void runTestRun(uint rounds);
     void runTestRun(const std::vector<uint>& roundsMass);
 
+    // Prints a summary of the loaded machine's shape: symbols, reels, patterns,
+    // and paytable/pattern linkage.
+    void printConfig() const;
+
     // Prints the accumulated financial and symbol/paytable statistics to stdout.
     void printResults() const;
 

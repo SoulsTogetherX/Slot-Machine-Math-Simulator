@@ -51,7 +51,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: all
-	$(RUN_CMD) data/examples/example.json
+	$(RUN_CMD)
 
 clean:
 	$(call RMDIR_RF,$(BUILD_DIR))

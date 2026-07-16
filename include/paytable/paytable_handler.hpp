@@ -24,14 +24,16 @@ private:
 
     // Extracts PayTables from nlohmann::json.
     void extractPayTables(
-        const nlohmann::json& info, const PatternHandler& pattern_handler
+        const nlohmann::json& info, const PatternHandler& pattern_handler,
+        const SymbolHandler& symbol_handler
     );
     // Extracts an optional per-paytable list of PayoutVariant rules.
     std::vector<PayoutVariant> extractVariants(const nlohmann::json& it);
 public:
     // Extracts PayTables from nlohmann::json.
     void loadJson(
-        const nlohmann::json& info, const PatternHandler& pattern_handler
+        const nlohmann::json& info, const PatternHandler& pattern_handler,
+        const SymbolHandler& symbol_handler
     );
 
     bool hasPayTable(const std::string& id) const;
